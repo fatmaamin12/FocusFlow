@@ -1,0 +1,41 @@
+{% include "_layout_head.html" with context %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+  <div class="calendar-container">
+    <div class="calendar-controls">
+      <button id="prevMonth"><i class="bx bx-chevron-left"></i></button>
+      <h3 id="monthYear"></h3>
+      <button id="nextMonth"><i class="bx bx-chevron-right"></i></button>
+    </div>
+    <div class="calendar-grid">
+      <div class="day-name">Mon</div><div class="day-name">Tue</div><div class="day-name">Wed</div>
+      <div class="day-name">Thu</div><div class="day-name">Fri</div><div class="day-name">Sat</div><div class="day-name">Sun</div>
+    </div>
+    <div id="calendarDays" class="calendar-days"></div>
+  </div>
+  <div id="taskModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close-btn">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDate"></p>
+      <div id="modalTasks"></div>
+      <div id="modalActions">
+        <button id="editTaskBtn">✏️ Edit</button>
+        <button id="deleteTaskBtn">🗑 Delete</button>
+      </div>
+      <div id="editForm" style="display:none;">
+        <input id="editTitle" placeholder="Task Title">
+        <textarea id="editDesc" placeholder="Description"></textarea>
+        <select id="editTag">
+          <option>UI</option>
+          <option>Meeting</option>
+          <option>Work</option>
+          <option>Review</option>
+          <option>Personal</option>
+        </select>
+        <button id="saveTaskBtn">💾 Save</button>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/projects-calendar.js') }}"></script>
+{% include "_layout_foot.html" %}
+

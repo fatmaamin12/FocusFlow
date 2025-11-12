@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Focus Flow | Login</title>
+
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+<!-- Auth CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+
+</head>
+<body>
+
+<div class="auth-wrapper">
+
+  <!-- LOGIN BOX -->
+  <div class="auth-box {% if show_signup %}hidden{% endif %}" id="loginBox">
+    <h1>Welcome Back 👋</h1>
+    <p>Sign in to your productivity hub</p>
+
+    {% if error and not show_signup %}
+      <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form action="/login" method="POST" class="auth-form">
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Email" required>
+      </div>
+
+      <div class="input-box">
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+
+      <button type="submit" class="auth-btn">Sign In</button>
+    </form>
+
+    <p class="switch">New here? <a href="#" id="showSignup">Create Account</a></p>
+  </div>
+
+  <!-- SIGNUP BOX -->
+  <div class="auth-box {% if not show_signup %}hidden{% endif %}" id="signupBox">
+    <h1>Create Account ✨</h1>
+    <p>Join the productivity hub</p>
+
+    {% if error and show_signup %}
+      <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form action="/signup" method="POST" class="auth-form">
+      <div class="input-box">
+        <input type="text" name="name" placeholder="Full Name" required>
+      </div>
+
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Email" required>
+      </div>
+
+      <div class="input-box">
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+
+      <button type="submit" class="auth-btn">Sign Up</button>
+    </form>
+
+    <p class="switch">Already have an account? <a href="#" id="showLogin">Sign In</a></p>
+  </div>
+
+</div>
+
+<!-- Toggle script -->
+<script>
+const loginBox = document.getElementById("loginBox");
+const signupBox = document.getElementById("signupBox");
+const showSignup = document.getElementById("showSignup");
+const showLogin = document.getElementById("showLogin");
+
+if(showSignup){
+  showSignup.onclick = e => {
+    e.preventDefault();
+    loginBox.classList.add("hidden");
+    signupBox.classList.remove("hidden");
+  };
+}
+
+if(showLogin){
+  showLogin.onclick = e => {
+    e.preventDefault();
+    signupBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+  };
+}
+</script>
+
+</body>
+</html>

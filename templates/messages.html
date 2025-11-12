@@ -1,0 +1,47 @@
+{% include "_layout_head.html" with context %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+  <div class="messages-wrapper">
+    <div class="contacts">
+      <div class="contacts-header">
+        <h3>Contacts</h3>
+        <button id="newChatBtn" class="new-chat-btn">+</button>
+      </div>
+      <div id="contactsList">
+        <div class="contact active" data-user="sofia">
+          <img src="https://i.pravatar.cc/40?img=1">
+          <div><p class="name">Sofia</p><p class="last-msg">How’s it going?</p></div>
+        </div>
+        <div class="contact" data-user="ali">
+          <img src="https://i.pravatar.cc/40?img=2">
+          <div><p class="name">Ali</p><p class="last-msg">Finish UI tomorrow</p></div>
+        </div>
+        <div class="contact" data-user="mira">
+          <img src="https://i.pravatar.cc/40?img=3">
+          <div><p class="name">Mira</p><p class="last-msg">See you!</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-box">
+      <div id="chatArea" class="chat-area"></div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Type your message...">
+        <button id="sendBtn"><i class="bx bx-send"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New chat modal -->
+  <div id="newChatModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Start New Chat</h3>
+      <input id="newUserName" placeholder="Contact name">
+      <input id="newUserImg" placeholder="Avatar URL (optional)">
+      <div class="modal-actions">
+        <button id="cancelChat" class="cancel">Cancel</button>
+        <button id="createChat" class="create">Create</button>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+{% include "_layout_foot.html" %}
+

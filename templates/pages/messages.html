@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Messages | Focus Flow</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Correct Paths -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="bx bx-target-lock"></i><span>Focus Flow</span>
+    </div>
+    
+    <ul class="menu">
+      <li><a href="{{ url_for('dashboard') }}"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
+      <li><a href="{{ url_for('projects') }}"><i class='bx bxs-folder'></i>Projects</a></li>
+      <li><a href="{{ url_for('tasks') }}"><i class='bx bx-task'></i>Tasks</a></li>
+      <li class="active"><a href="{{ url_for('messages') }}"><i class='bx bxs-message-dots'></i>Messages</a></li>
+      <li><a href="{{ url_for('team') }}"><i class='bx bxs-group'></i>Team</a></li>
+      <li><a href="{{ url_for('settings') }}"><i class='bx bxs-cog'></i>Settings</a></li></ul>
+      
+      <div class="logout">
+        <a href="{{ url_for('logout') }}"><i class="bx bx-log-out"></i>Logout</a>
+      </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <header class="topbar">
+      <h2>Messages</h2>
+      <div class="top-right">
+        <div class="notifications">
+          <i class="bx bx-bell notif-icon"></i>
+          <span class="notif-badge">0</span>
+          <div class="notif-dropdown hidden">
+            <div class="notif-header">Notifications</div>
+            <div class="notif-list"></div>
+            <div class="notif-empty">You're all caught up 🎉</div>
+            <div class="notif-footer">
+              <button class="mark-read">Mark as read</button>
+              <button class="clear-all">Clear all</button>
+            </div>
+          </div>
+        </div>
+        <img src="https://i.pravatar.cc/40" class="avatar">
+      </div>
+    </header>
+
+    <!-- MESSAGES WRAPPER -->
+    <div class="messages-wrapper">
+      
+      <div class="contacts" id="contactsList">
+        <div class="contacts-header">
+          <h3>Chats</h3>
+          <button id="newChatBtn" class="new-chat-btn"><i class='bx bx-plus'></i></button>
+        </div>
+
+        <div class="contact active" data-user="sofia">
+          <img src="https://i.pravatar.cc/40?img=1">
+          <div>
+            <p class="name">Sofia</p>
+            <p class="last-msg">Okay, thank you!</p>
+          </div>
+        </div>
+
+        <div class="contact" data-user="ali">
+          <img src="https://i.pravatar.cc/40?img=2">
+          <div>
+            <p class="name">Ali</p>
+            <p class="last-msg">Let’s finish the UI...</p>
+          </div>
+        </div>
+
+        <div class="contact" data-user="mira">
+          <img src="https://i.pravatar.cc/40?img=3">
+          <div>
+            <p class="name">Mira</p>
+            <p class="last-msg">See you tomorrow!</p>
+          </div>
+        </div>
+
+        <div class="contact" data-user="john">
+          <img src="https://i.pravatar.cc/40?img=4">
+          <div>
+            <p class="name">John</p>
+            <p class="last-msg">Send the file?</p>
+          </div>
+        </div>
+
+        <div class="contact" data-user="mike">
+          <img src="https://i.pravatar.cc/40?img=5">
+          <div>
+            <p class="name">Mike</p>
+            <p class="last-msg">Check the mail I sent...</p>
+          </div>
+        </div>
+
+        <!-- New chat modal -->
+        <div id="newChatModal" class="modal hidden">
+          <div class="modal-content">
+            <h3>Start New Chat</h3>
+            <input id="newUserName" placeholder="Contact name">
+            <input id="newUserImg" placeholder="Avatar URL (optional)">
+            <div class="modal-actions">
+              <button id="cancelChat" class="cancel">Cancel</button>
+              <button id="createChat" class="create">Create</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="chat-box">
+        <div class="chat-area" id="chatArea">
+          <div class="msg incoming">Hi! How’s the project going?</div>
+          <div class="msg outgoing">Good! Just finishing the tasks section.</div>
+        </div>
+
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="Type a message...">
+          <button id="sendBtn"><i class='bx bx-send'></i></button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Correct JS Path -->
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+<script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+</body>
+</html>

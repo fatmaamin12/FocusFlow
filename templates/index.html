@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Focus Flow Dashboard</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/team.css') }}">
+
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="bx bx-target-lock"></i>
+      <span>Focus Flow</span>
+    </div>
+
+    <ul class="menu">
+      <li class="active"><a href="{{ url_for('dashboard') }}"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('projects') }}"><i class="bx bxs-folder"></i> Projects</a></li>
+      <li><a href="{{ url_for('tasks') }}"><i class="bx bx-task"></i> Tasks</a></li>
+      <li><a href="{{ url_for('messages') }}"><i class="bx bxs-message-dots"></i> Messages</a></li>
+      <li><a href="{{ url_for('team') }}"><i class="bx bxs-group"></i> Team</a></li>
+      <li><a href="{{ url_for('settings') }}"><i class="bx bxs-cog"></i> Settings</a></li>
+    </ul>
+
+    <div class="logout">
+      <a href="{{ url_for('logout') }}"><i class="bx bx-log-out"></i> Logout</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <h2>Dashboard</h2>
+
+      <div class="search-box">
+        <input id="searchInput" placeholder="Search tasks..." />
+        <i class="bx bx-search"></i>
+      </div>
+
+      <div class="top-right">
+        <div class="notifications">
+          <i class="bx bx-bell notif-icon"></i>
+          <span class="notif-badge">0</span>
+
+          <div class="notif-dropdown hidden">
+            <div class="notif-header">Notifications</div>
+            <div class="notif-list"></div>
+            <div class="notif-empty">You're all caught up 🎉</div>
+            <div class="notif-footer">
+              <button class="mark-read">Mark as read</button>
+              <button class="clear-all">Clear all</button>
+            </div>
+          </div>
+        </div>
+
+        <img src="https://i.pravatar.cc/40" class="avatar" />
+      </div>
+    </header>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stats-card blue">
+        <p class="stat-label">Total project done</p>
+        <h3 class="stat-number">322</h3>
+        <div class="stat-growth"><i class="bx bx-trending-up"></i> 2.5% More than last month</div>
+      </div>
+
+      <div class="stats-card yellow">
+        <p class="stat-label">Client onboard</p>
+        <h3 class="stat-number">21</h3>
+        <div class="stat-growth"><i class="bx bx-trending-up"></i> 1.5% More than last month</div>
+      </div>
+
+      <div class="stats-card green">
+        <p class="stat-label">New task onboard</p>
+        <h3 class="stat-number">532</h3>
+        <div class="stat-growth"><i class="bx bx-trending-up"></i> 5.5% More than last month</div>
+      </div>
+    </section>
+
+    <!-- STATUS PILLS -->
+    <section class="task-status">
+      <div class="status-pill grey">Coming Next <span class="pill-count">3</span></div>
+      <div class="status-pill blue">In Progress <span class="pill-count">5</span></div>
+      <div class="status-pill green">Completed <span class="pill-count">3</span></div>
+    </section>
+
+    <!-- TASK CARDS -->
+    <section class="Tasks" id="taskContainer"></section>
+
+  </div>
+
+  <!-- JS FILES -->
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/projects-calendar.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/team.js') }}"></script>
+
+</body>
+</html>

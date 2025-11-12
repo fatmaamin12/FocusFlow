@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks | Focus Flow</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
+
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="bx bx-target-lock"></i><span>Focus Flow</span>
+    </div>
+
+    <ul class="menu">
+      <li><a href="../index.html"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
+      <li><a href="projects.html"><i class='bx bxs-folder'></i>Projects</a></li>
+      <li class="active"><a href="tasks.html"><i class='bx bx-task'></i>Tasks</a></li>
+      <li><a href="messages.html"><i class='bx bxs-message-dots'></i>Messages</a></li>
+      <li><a href="team.html"><i class='bx bxs-group'></i>Team</a></li>
+      <li><a href="settings.html"><i class='bx bxs-cog'></i>Settings</a></li>
+    </ul>
+
+    <div class="logout"><i class="bx bx-log-out"></i>Logout</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <h2>Tasks</h2>
+      <div class="top-right">
+        <div class="notifications">
+          <i class="bx bx-bell notif-icon"></i>
+          <span class="notif-badge">0</span>
+          <div class="notif-dropdown hidden">
+            <div class="notif-header">Notifications</div>
+            <div class="notif-list"></div>
+            <div class="notif-empty">You're all caught up 🎉</div>
+            <div class="notif-footer">
+              <button class="mark-read">Mark as read</button>
+              <button class="clear-all">Clear all</button>
+            </div>
+          </div>
+        </div>
+        <img src="https://i.pravatar.cc/40" class="avatar">
+      </div>
+    </header>
+
+    <!-- FILTERS -->
+    <div class="task-filters">
+      <button class="task-tab active" data-filter="all">All Tasks</button>
+      <button class="task-tab" data-filter="ongoing">Ongoing</button>
+      <button class="task-tab" data-filter="completed">Completed</button>
+
+      <button id="addTaskBtn" class="add-task"><i class='bx bx-plus'></i> Add Task</button>
+    </div>
+
+    <!-- TASK LIST -->
+    <div class="task-list" id="taskList"></div>
+
+  </div>
+
+  <!-- ADD TASK MODAL -->
+  <div id="taskModal" class="task-modal hidden">
+    <div class="task-modal-content">
+      <span id="closeTaskModal" class="close-btn">&times;</span>
+      <h3>Add New Task</h3>
+      <input id="taskTitleInput" placeholder="Task Title">
+      <textarea id="taskDescInput" placeholder="Task Description"></textarea>
+
+      <select id="taskStatusInput">
+        <option value="ongoing">Ongoing</option>
+        <option value="completed">Completed</option>
+      </select>
+
+      <button id="saveTaskBtn" class="save-btn">Save Task</button>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+</body>
+</html>
