@@ -9,12 +9,13 @@ Variables
   --orange: #f9ea7f;
   --blue: #707aff;
   --yellow: #f9ea7f;
-  --green: #f8b677;
+  --orange: #f8b677;
   --gray: #b5b5b5;
   --pink: #ffb0d6;
+  --green: #58b28f;
 
   --radius: 25px;
-  --shadow: 0 6px 18px rgba(0,0,0,0.08);
+  --shadow: 0 6px 18px #00000014;
 }
 
 /* Dark Mode */
@@ -80,7 +81,7 @@ Sidebar
     transition: 0.25s;
     gap: 12px;
 }
-.menu li a i {
+.menu li a i, .menu li a:hover i {
     font-size: 20px;
     color: inherit;
 }
@@ -112,7 +113,7 @@ Sidebar
     display:flex;
     color:var(--text-light);
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     transition: 0.2s;
     font-size: 16px;
 }
@@ -266,6 +267,8 @@ Main
     width:40px;
     height:40px;
     border-radius:50%;
+    display: flex;
+    align-content: center;
 }
 
 /* dark mode toggle button */
@@ -306,9 +309,19 @@ Status Cards
 .stats-card.blue{border-color:var(--blue);}
 .stats-card.yellow{border-color:var(--yellow);}
 .stats-card.green{border-color:var(--green);}
-.stat-label{font-size:14px;color:var(--text-light);}
-.stat-number{font-size:32px;font-weight:700;}
-.stat-growth{color:var(--green);font-size:13px;display:flex;gap:6px;}
+.stat-label{
+  font-size:14px;
+  color:var(--text-light);
+}
+.stat-number{
+  font-size:32px;
+  font-weight:700;
+}
+.stat-growth{
+  color:var(--pink);
+  font-size:13px;
+  display:flex;
+  gap:6px;}
 
 /*==============================
 Status Pills
@@ -321,7 +334,7 @@ Status Pills
   margin:25px 0;
 }
 .status-pill{
-  background:var(--orange);
+  background:var(--green);
   padding:14px 20px;
   border-radius:var(--radius);
   color:#fff;
@@ -336,6 +349,9 @@ Status Pills
 }
 .status-pill.blue{
     background:var(--blue);
+}
+.status-pill.yellow{
+    background:var(--yellow);
 }
 .status-pill.green{
     background:var(--green);
@@ -352,8 +368,10 @@ Status Pills
 Task Cards
 ==============================*/
 .Tasks{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:20px;margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:20px;
 }
 .task-card{
   background:var(--card-bg);padding:20px;

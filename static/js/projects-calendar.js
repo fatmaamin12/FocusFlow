@@ -1,3 +1,10 @@
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+
+
 /****************************
  * PROJECTS CALENDAR SCRIPT
  ****************************/
@@ -69,7 +76,7 @@ function saveTasks() {
 }
 
 function fmtDate(y, m, d) {
-  return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
 function todayStr() {
@@ -88,36 +95,70 @@ function renderCalendar() {
 
   const firstDay = new Date(year, month, 1);
   let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 7 : startDay;
+  startDay = startDay === 0 ? 7 : startDay; // start week on Monday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   calendarDays.innerHTML = "";
 
-  for (let i = 1; i < startDay; i++) calendarDays.innerHTML += `<div></div>`;
+  // Empty spaces before month start
+  for (let i = 1; i < startDay; i++) {
+    calendarDays.innerHTML += `<div></div>`;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // normalize
 
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = fmtDate(year, month + 1, day);
-    const isToday = dateStr === todayStr();
-    const dayTasks = tasks[dateStr] || [];
+    const cellDate = new Date(year, month, day);
+    cellDate.setHours(0, 0, 0, 0);
 
+    const isToday = dateStr === todayStr();
+    const isPast = cellDate < today;
+
+    const dayTasks = tasks[dateStr] || [];
     const tasksHTML = dayTasks
-      .map((t, i) => `
-        <div class="cal-task"
-             style="border-left:4px solid ${TAG_COLORS[t.tag] || "#444"}"
-             data-date="${dateStr}"
-             data-index="${i}"
-             draggable="true">
-          ${t.title}
-        </div>
-      `)
+      .map(
+        (t, i) => `
+          <div class="cal-task"
+               style="border-left:4px solid ${TAG_COLORS[t.tag] || "#444"}"
+               data-date="${dateStr}"
+               data-index="${i}"
+               draggable="true">
+            ${t.title}
+          </div>
+        `
+      )
       .join("");
 
-    
-    calendarDays.innerHTML += `<div class="calendar-day ${isToday ? "today" : ""}" data-date="${dateStr}">
-    <span class="day-number">${day}</span>
-    <div class="task-box">${tasksHTML}</div>
-    <button class="add-task-btn" data-date="${dateStr}">+</button>
-    </div>`;
+    // Determine if entire month is past or future
+    const isPastMonth =
+      year < today.getFullYear() ||
+      (year === today.getFullYear() && month < today.getMonth());
+    const isFutureMonth =
+      year > today.getFullYear() ||
+      (year === today.getFullYear() && month > today.getMonth());
+
+    // ✅ Render past, current, or future days accordingly
+    if (isPastMonth) {
+      // Whole month in past
+      calendarDays.innerHTML += `
+        <div class="calendar-day past-day" data-date="${dateStr}">
+          <span class="day-number">${day}</span>
+          <div class="task-box">${tasksHTML}</div>
+          <button class="add-task-btn" data-date="${dateStr}">+</button>
+        </div>`;
+    } else {
+      // Current or future month
+      calendarDays.innerHTML += `
+        <div class="calendar-day ${isToday ? "today" : ""} ${
+        isPast ? "past-day" : ""
+      }" data-date="${dateStr}">
+          <span class="day-number">${day}</span>
+          <div class="task-box">${tasksHTML}</div>
+          <button class="add-task-btn" data-date="${dateStr}">+</button>
+        </div>`;
+    }
   }
 
   setTimeout(attachEvents, 0);
@@ -125,30 +166,39 @@ function renderCalendar() {
 
 /********* EVENTS *********/
 function attachEvents() {
+  const today = new Date(todayStr());
+
+  // Disable old tasks
   document.querySelectorAll(".cal-task").forEach(el => {
-    el.addEventListener("click", (e) => {
+    const taskDate = new Date(el.dataset.date);
+    if (taskDate < today) {
+      el.classList.add("disabled-task");
+      return;
+    }
+    el.addEventListener("click", e => {
       e.stopPropagation();
       openTask(el.dataset.date, el.dataset.index);
     });
   });
 
+  // Add new tasks only for non-past days
   document.querySelectorAll(".add-task-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
+    const btnDate = new Date(btn.dataset.date);
+    if (btnDate < today) return; // no event for past days
+    btn.addEventListener("click", e => {
       e.stopPropagation();
       newTask(btn.dataset.date);
     });
   });
-
-  enableDrag();
 }
 
 /********* MODAL CONTROLS *********/
-function showModal() { 
-  modal.classList.add("open"); 
+function showModal() {
+  modal.classList.add("open");
 }
 
-function hideModal() { 
-  modal.classList.remove("open"); 
+function hideModal() {
+  modal.classList.remove("open");
   selectedTaskIndex = null;
 }
 

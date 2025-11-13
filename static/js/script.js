@@ -12,7 +12,7 @@ const tasks = [
     id: 1,
     tag: "UI Design",
     title: "Landing Page Design",
-    desc: "Starting a new business feels like juggling while riding a unicycle",
+    desc: "Starting a new business feels like juggling",
     status: "coming-next", // coming-next, in-progress, completed
     priority: "high", // high, medium, low
     dueDate: "2025-01-15",
@@ -27,7 +27,7 @@ const tasks = [
     id: 2,
     tag: "Brand Identity",
     title: "Logo Exploration",
-    desc: "Brainstorm logo ideas and finalize top 3 concepts",
+    desc: "Logo ideas and finalize top 3 concepts",
     status: "in-progress",
     priority: "medium",
     dueDate: "2025-01-20",
@@ -57,7 +57,7 @@ const tasks = [
     id: 4,
     tag: "Backend",
     title: "API Integration",
-    desc: "Integrate REST API endpoints for user authentication",
+    desc: "Integrate REST API endpoints for user",
     status: "in-progress",
     priority: "high",
     dueDate: "2025-01-17",
@@ -72,7 +72,7 @@ const tasks = [
     id: 5,
     tag: "Testing",
     title: "Unit Tests",
-    desc: "Write comprehensive unit tests for core modules",
+    desc: "Comprehensive unit tests for core modules",
     status: "coming-next",
     priority: "medium",
     dueDate: "2025-01-22",
@@ -164,12 +164,12 @@ const tasks = [
 /********************************
  * 📝 RENDER TASK CARDS
  ********************************/
-function renderTasks(searchTerm = "") {
+function renderTasks(searchTerm = "") { //empty string
   const container = document.getElementById("taskContainer");
   if (!container) return;
 
   // Filter tasks based on search term
-  let filteredTasks = tasks;
+  let filteredTasks = tasks;  //If user typed something in search , filter the list
   if (searchTerm.trim() !== "") {
     const searchLower = searchTerm.toLowerCase();
     filteredTasks = tasks.filter(task => {

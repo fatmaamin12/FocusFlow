@@ -1,3 +1,8 @@
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+
 // Elements
 const input = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");

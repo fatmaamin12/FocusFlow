@@ -1,5 +1,47 @@
-{% include "_layout_head.html" with context %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages | Focus Flow</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <i class='bx bx-target-lock'></i><span>Focus Flow</span>
+  </div>
+
+  <ul class="menu">
+    <li><a href="{{ url_for('dashboard') }}"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
+    <li><a href="{{ url_for('projects') }}"><i class='bx bxs-folder'></i>Projects</a></li>
+    <li><a href="{{ url_for('tasks') }}"><i class='bx bx-task'></i>Tasks</a></li>
+    <li class="active"><a href="{{ url_for('messages') }}"><i class='bx bxs-message-dots'></i>Messages</a></li>
+    <li><a href="{{ url_for('team') }}"><i class='bx bxs-group'></i>Team</a></li>
+    <li><a href="{{ url_for('settings') }}"><i class='bx bxs-cog'></i>Settings</a></li>
+  </ul>
+
+  <div class="logout"><a href="{{ url_for('logout') }}"><i class="bx bx-log-out"></i>Logout</a></div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <header class="topbar">
+    <h2>Messages</h2>
+    <div class="top-right">
+      <i class="bx bx-bell"></i>
+      <img src="https://i.pravatar.cc/40" class="avatar">
+    </div>
+  </header>
   <div class="messages-wrapper">
     <div class="contacts">
       <div class="contacts-header">
@@ -43,5 +85,5 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
-{% include "_layout_foot.html" %}
-
+</body>
+</html>

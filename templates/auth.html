@@ -93,6 +93,59 @@ if(showLogin){
     loginBox.classList.remove("hidden");
   };
 }
+
+
+const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
+
+// Handle signup
+if (signupForm) {
+  signupForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = signupForm.querySelector("input[name='name']").value;
+    const email = signupForm.querySelector("input[name='email']").value;
+    const password = signupForm.querySelector("input[name='password']").value;
+
+    const user = { name, email, password };
+
+    // Save in localStorage
+    localStorage.setItem("user", JSON.stringify(user));
+
+    alert("Account created successfully 🎉");
+
+    // Switch to login box after signup
+    signupBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+  });
+}
+
+// Handle login
+if (loginForm) {
+  loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const email = loginForm.querySelector("input[name='email']").value;
+    const password = loginForm.querySelector("input[name='password']").value;
+
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!savedUser) {
+      alert("No account found. Please sign up first.");
+      return;
+    }
+
+    if (email === savedUser.email && password === savedUser.password) {
+      alert(`Welcome back, ${savedUser.name}! ✅`);
+      // You can redirect to dashboard.html here:
+      window.location.href = "/dashboard"; // or dashboard.html if static
+    } else {
+      alert("Incorrect email or password ❌");
+    }
+  });
+}
+
+
 </script>
 
 </body>

@@ -1,3 +1,7 @@
+/* ===============================
+   📅 CALENDAR LAYOUT & STYLE
+   =============================== */
+
 .calendar-container {
   background: var(--card-bg);
   padding: 25px;
@@ -27,12 +31,12 @@
   font-weight: 600;
 }
 
-.calendar-grid, .calendar-days {
+.calendar-grid,
+.calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
   text-align: center;
-
 }
 
 .day-name {
@@ -42,18 +46,23 @@
   padding: 6px 0;
 }
 
+/* ===============================
+   🧩 DAY CELL STYLING
+   =============================== */
+
 .calendar-day {
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    padding: 6px;
-    min-height: 90px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    background: #fff;
-    position: relative;
-    overflow: hidden;
-    background: var(--card-bg);
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 6px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* TOP (number) / MIDDLE (tasks) / BOTTOM (+) */
+  background: var(--card-bg);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .calendar-day:hover {
@@ -61,26 +70,39 @@
 }
 
 .calendar-day.today {
-  border: 2px solid #2531cc;
+  border: 2px solid #707aff;
   background: var(--bg);
   font-weight: 600;
 }
 
+/* ===============================
+   🔢 DAY NUMBER
+   =============================== */
+
 .day-number {
   font-size: 13px;
   font-weight: bold;
-  margin-bottom: 4px;
   color: var(--text-dark);
+  align-self: flex-start;
+  position: relative;
+  z-index: 2;
 }
 
+/* ===============================
+   🗂 TASK BOX (scrollable area)
+   =============================== */
+
 .task-box {
+  flex-grow: 1;
   margin-top: 4px;
   overflow-y: auto;
   max-height: 70px;
+  padding-right: 2px;
+  box-sizing: border-box;
 }
 
 .cal-task {
-  background: #2531cc;
+  background: var(--blue);
   color: white;
   font-size: 11px;
   padding: 3px 5px;
@@ -89,12 +111,60 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
 }
 
+/* ===============================
+   ➕ ADD TASK BUTTON
+   =============================== */
+
+.add-task-btn {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 20px;
+  align-self: flex-start;
+  margin-top: 6px;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.add-task-btn:hover {
+  transform: scale(1.1);
+  background-color: var(--blue);
+}
+
+/* Disabled button state */
+.disabled-task {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Past day fade effect */
+.calendar-day.past-day .add-task-btn {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+
+/* Disabled task style */
+.disabled-task {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Small event dot (optional visual indicator) */
 .event-dot {
   height: 8px;
   width: 8px;
-  background: #2531cc;
+  background: var(--blue);
   border-radius: 50%;
   position: absolute;
   bottom: 6px;
@@ -102,7 +172,10 @@
   transform: translateX(-50%);
 }
 
-/* Modal Background */
+/* ===============================
+   🪟 MODAL STYLING
+   =============================== */
+
 .modal {
   display: none;
   position: fixed;
@@ -118,7 +191,6 @@
   display: flex;
 }
 
-/* Modal Box */
 .modal-content {
   background: #fff;
   padding: 24px;
@@ -129,7 +201,6 @@
   border: 1px solid rgba(0,0,0,0.06);
 }
 
-/* Close Button */
 .close-btn {
   float: right;
   font-size: 22px;
@@ -139,7 +210,10 @@
   padding: 4px 8px;
   color: #374151;
 }
-.close-btn:hover { background: #f3f4f6; }
+
+.close-btn:hover {
+  background: #f3f4f6;
+}
 
 #modalTitle {
   font-size: 20px;
@@ -160,26 +234,47 @@
   border-radius: 8px;
 }
 
-/* Animation */
+/* ===============================
+   🎬 MODAL ANIMATION
+   =============================== */
+
 @keyframes modal-pop {
-  from { transform: translateY(8px) scale(0.98); opacity: 0 }
-  to { transform: translateY(0) scale(1); opacity: 1 }
+  from {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
-.modal-actions, #modalActions {
+/* ===============================
+   ⚙️ MODAL BUTTONS
+   =============================== */
+
+.modal-actions,
+#modalActions {
   margin-top: 16px;
   display: flex;
   gap: 10px;
 }
-.modal-actions .cancel, #modalActions .cancel {
+
+.modal-actions .cancel,
+#modalActions .cancel {
   background: #f3f4f6;
   color: #111827;
 }
-.modal-actions .create, #modalActions button {
+
+.modal-actions .create,
+#modalActions button {
   background: #2531cc;
   color: #fff;
 }
-.modal-actions button, #modalActions button, #editForm button {
+
+.modal-actions button,
+#modalActions button,
+#editForm button {
   border: none;
   padding: 10px 14px;
   border-radius: 10px;
@@ -187,15 +282,26 @@
   transition: transform 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
-.modal-actions button:hover, #modalActions button:hover, #editForm button:hover {
+
+.modal-actions button:hover,
+#modalActions button:hover,
+#editForm button:hover {
   transform: translateY(-1px);
 }
-.modal-actions button:active, #modalActions button:active, #editForm button:active {
+
+.modal-actions button:active,
+#modalActions button:active,
+#editForm button:active {
   transform: translateY(0);
 }
 
-/* Form elements inside modal */
-#editForm input, #editForm textarea, #editForm select {
+/* ===============================
+   📝 MODAL FORM ELEMENTS
+   =============================== */
+
+#editForm input,
+#editForm textarea,
+#editForm select {
   width: 100%;
   margin-top: 10px;
   padding: 10px 12px;
@@ -204,36 +310,46 @@
   font: inherit;
   background: #fff;
 }
-#editForm textarea { min-height: 90px; resize: vertical; }
 
-/* Respect reduced motion */
+#editForm textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* ===============================
+   ⚙️ ACCESSIBILITY & REDUCED MOTION
+   =============================== */
+
 @media (prefers-reduced-motion: reduce) {
   .modal-content {
     animation: none;
   }
-  .modal-actions button, #modalActions button, #editForm button {
+
+  .modal-actions button,
+  #modalActions button,
+  #editForm button {
     transition: none;
   }
 }
-.add-task-btn {
-  background:#2531cc;
-  color:#fff;
-  border:none;
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  cursor:pointer;
-  font-size:16px;
-  line-height:20px;
-}
-.cal-task {
-  cursor: pointer;
-  pointer-events: auto;
-  position: relative;
-  z-index: 10;
+
+/* ===============================
+   📱 RESPONSIVE DESIGN
+   =============================== */
+
+@media (max-width: 900px) {
+  .calendar-grid,
+  .calendar-days {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
+@media (max-width: 600px) {
+  .calendar-grid,
+  .calendar-days {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-
-
-
+  .calendar-day {
+    min-height: 110px;
+  }
+}
