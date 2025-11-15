@@ -13,6 +13,9 @@ Variables
   --gray: #b5b5b5;
   --pink: #ffb0d6;
   --green: #58b28f;
+  --logo: #707aff;
+  --msg: #f5f7fb;
+
 
   --radius: 25px;
   --shadow: 0 6px 18px #00000014;
@@ -22,10 +25,13 @@ Variables
 body.dark {
   --bg: #050a13;
   --card-bg: #141c2b;
-  --text-dark: #cad2e3;
+  --text-dark: #000000;
   --text-light: #cad2e3;
   --shadow: 0 12px 28px rgba(0,0,0,0.5);
-  --blue: #050c2b;
+  --blue: #707aff;
+  --logo: #cad2e3;
+  --msg: #252d3c;
+
 }
 
 /*==============================
@@ -40,7 +46,7 @@ Base
 body{
   display:flex;
   background:var(--bg);
-  color:var(--text-dark);
+  color:var(--text-light);
 }
 
 /*==============================
@@ -99,10 +105,12 @@ Sidebar
   background: rgb(255, 212, 233); /* light grey line */
   margin: 15px 0; }
 
-.logo{font-weight:600;
-    margin-bottom:25px;
-    display:flex;
-    gap:10px;}
+.logo{
+  font-weight:600;
+  margin-bottom:25px;
+  display:flex;
+  gap:10px;
+}
 
 .logout{
     margin-top:25px;
@@ -174,7 +182,7 @@ Main
   margin-right: 12px;
 }
 .notif-icon {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--text-dark);
 }
 .notif-badge {
@@ -267,8 +275,7 @@ Main
     width:40px;
     height:40px;
     border-radius:50%;
-    display: flex;
-    align-content: center;
+  
 }
 
 /* dark mode toggle button */
@@ -285,7 +292,7 @@ Main
 .logo i {
   font-size: 28px; /* bigger icon */
   font-weight: bold;
-  color: var(--blue);
+  color: var(--logo);
 }
 
 .logo span {
@@ -374,12 +381,18 @@ Task Cards
   margin-top:20px;
 }
 .task-card{
-  background:var(--card-bg);padding:20px;
-  border-radius:var(--radius);box-shadow:var(--shadow);
+  background:var(--card-bg);
+  padding:20px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
   transition:.2s;
-  display:flex;flex-direction:column;gap:12px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
-.task-card:hover{transform:translateY(-3px);}
+.task-card:hover{
+  transform:translateY(-3px);
+}
 .task-header{
   display:flex;justify-content:space-between;align-items:center;
 }
@@ -388,28 +401,64 @@ Task Cards
   background:#ffe8f2;color:#ff4fa3;font-weight:500;
 }
 .priority-badge{
-  font-size:11px;padding:4px 8px;border-radius:6px;
-  font-weight:600;text-transform:capitalize;
-  display:flex;align-items:center;gap:4px;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:6px;
+  font-weight:600;
+  text-transform:capitalize;
+  display:flex;
+  align-items:center;
+  gap:4px;
 }
-.priority-badge.red{background:#fee2e2;color:#dc2626;}
-.priority-badge.yellow{background:#fef3c7;color:#d97706;}
-.priority-badge.green{background:#d1fae5;color:#059669;}
-.task-title{font-size:18px;font-weight:600;margin-top:6px;}
-.task-desc{font-size:14px;color:var(--text-light);margin:6px 0;}
+.priority-badge.red
+{
+  background:#fee2e2;
+  color:#dc2626;
+}
+.priority-badge.yellow
+{
+  background:#fef3c7;
+  color:#d97706;
+}
+.priority-badge.green
+{background:#d1fae5;
+  color:#059669;
+}
+.task-title{
+  font-size:18px;
+  font-weight:600;
+  margin-top:6px;
+}
+.task-desc{
+  font-size:14px;
+  color:var(--text-light);
+  margin:6px 0;
+}
 .task-progress{
-  background:#f1f5f9;padding:6px 10px;border-radius:8px;
-  display:flex;flex-direction:column;gap:8px;font-size:14px;
+  background:var(--bg);
+  padding:6px 10px;
+  border-radius:8px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  font-size:14px;
 }
 .task-progress > div:first-child{
-  display:flex;align-items:center;gap:6px;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 .progress-bar-mini{
-  width:100%;height:4px;background:#e5e7eb;
-  border-radius:10px;overflow:hidden;margin-top:4px;
+  width:100%;
+  height:4px;
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:4px;
 }
 .progress-fill-mini{
-  height:100%;background:#3A7BFF;border-radius:10px;
+  height:100%;
+  background:#707aff;border-radius:10px;
   transition:width 0.3s ease;
 }
 .task-meta-row{
@@ -420,9 +469,21 @@ Task Cards
   font-size:11px;padding:4px 8px;border-radius:6px;
   font-weight:600;text-transform:capitalize;
 }
-.task-status-badge.grey{background:#f3f4f6;color:#4b5563;}
-.task-status-badge.blue{background:#DBEAFE;color:#1e40af;}
-.task-status-badge.green{background:#C6F6D5;color:#0F7A44;}
+.task-status-badge.grey
+{
+  background:#f3f4f6;
+  color:#4b5563;
+}
+.task-status-badge.blue
+{
+  background:#DBEAFE;
+  color:#707aff;
+}
+
+.task-status-badge.green{
+  background:#C6F6D5;
+  color:#58b28f;
+}
 .task-date{
   font-size:12px;color:var(--text-light);
   display:flex;align-items:center;gap:4px;

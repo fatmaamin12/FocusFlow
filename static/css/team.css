@@ -6,7 +6,7 @@
 }
 
 .add-member {
-  background: #3A7BFF;
+  background: #707aff;
   color: #fff;
   border: none;
   padding: 8px 14px;
@@ -25,7 +25,7 @@
 }
 
 .team-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 20px;
   display: flex;

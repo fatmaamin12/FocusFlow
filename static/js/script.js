@@ -162,7 +162,7 @@ const tasks = [
 
 
 /********************************
- * 📝 RENDER TASK CARDS
+      RENDER TASK CARDS
  ********************************/
 function renderTasks(searchTerm = "") { //empty string
   const container = document.getElementById("taskContainer");
@@ -171,8 +171,8 @@ function renderTasks(searchTerm = "") { //empty string
   // Filter tasks based on search term
   let filteredTasks = tasks;  //If user typed something in search , filter the list
   if (searchTerm.trim() !== "") {
-    const searchLower = searchTerm.toLowerCase();
-    filteredTasks = tasks.filter(task => {
+    const searchLower = searchTerm.toLowerCase(); //Converts the search term to lowercase
+    filteredTasks = tasks.filter(task => {  
       return (
         task.title.toLowerCase().includes(searchLower) ||
         task.desc.toLowerCase().includes(searchLower) ||
@@ -183,7 +183,7 @@ function renderTasks(searchTerm = "") { //empty string
     });
   }
 
-  if (filteredTasks.length === 0) {
+  if (filteredTasks.length === 0) {  // filteredTasks empty
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-light);">
         <i class="bx bx-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>

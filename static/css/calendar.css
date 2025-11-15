@@ -41,7 +41,7 @@
 
 .day-name {
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--text-light);
   font-size: 14px;
   padding: 6px 0;
 }
@@ -82,7 +82,7 @@
 .day-number {
   font-size: 13px;
   font-weight: bold;
-  color: var(--text-dark);
+  color: var(--text-light);
   align-self: flex-start;
   position: relative;
   z-index: 2;
@@ -102,7 +102,7 @@
 }
 
 .cal-task {
-  background: var(--blue);
+  background: #707aff;
   color: white;
   font-size: 11px;
   padding: 3px 5px;
@@ -121,7 +121,7 @@
    =============================== */
 
 .add-task-btn {
-  background: var(--blue);
+  background: #707aff;
   color: #fff;
   border: none;
   width: 22px;

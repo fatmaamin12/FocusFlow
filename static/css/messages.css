@@ -12,7 +12,7 @@ body.dark .messages-wrapper {
 .contacts {
   width: 240px;
   border-right: 1px solid #eee;
-  background: #fff;
+  background: var(--card-bg);
   padding: 10px;
   overflow-y: auto;
 }
@@ -27,7 +27,7 @@ body.dark .messages-wrapper {
 }
 
 .contact:hover, .contact.active {
-  background: #e8f0ff;
+  background: var(--msg);
 }
 
 .contact img {
@@ -54,7 +54,7 @@ body.dark .messages-wrapper {
 }
 
 .new-chat-btn {
-  background: #3A7BFF;
+  background: #707aff;
   border: none;
   padding: 6px 8px;
   border-radius: 8px;
@@ -127,8 +127,8 @@ body.dark .messages-wrapper {
 }
 
 .cancel { background: #f3f4f6; color: #111827; }
-.create { background: #3A7BFF; color: #fff; }
-.create:hover { background: #0057ff; }
+.create { background: #707aff; color: #fff; }
+.create:hover { background: #707aff; }
 .modal button:hover { transform: translateY(-1px); }
 .modal button:active { transform: translateY(0); }
 
@@ -163,6 +163,7 @@ body.dark .messages-wrapper {
 }
 
 .chat-area {
+  background: var(--msg);
   flex: 1;
   padding: 20px;
   overflow-y: auto;
@@ -177,13 +178,13 @@ body.dark .messages-wrapper {
 }
 
 .incoming {
-  background: white;
+  background: var(--card-bg);
   border: 1px solid #eee;
   align-self: flex-start;
 }
 
 .outgoing {
-  background: #3b82f6;
+  background: var(--blue);
   color: white;
   align-self: flex-end;
 }
@@ -193,7 +194,7 @@ body.dark .messages-wrapper {
   display: flex;
   gap: 10px;
   padding: 12px;
-  background: white;
+  background: var(--msg);
   border-top: 1px solid #eee;
 }
 
@@ -202,10 +203,11 @@ body.dark .messages-wrapper {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 10px;
+  
 }
 
 .chat-input button {
-  background: #3b82f6;
+  background: #707aff;
   color: white;
   border: none;
   width: 46px;

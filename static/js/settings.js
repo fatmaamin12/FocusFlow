@@ -24,3 +24,26 @@ themeToggle?.addEventListener("change", () => {
     localStorage.setItem("theme", "light");
   }
 });
+
+
+const deleteBtn = document.getElementById("deleteAccountBtn");
+const modal = document.getElementById("deleteModal");
+const cancelBtn = document.getElementById("cancelDelete");
+const confirmBtn = document.getElementById("confirmDelete");
+
+// Open modal
+deleteBtn.addEventListener("click", () => {
+  modal.classList.remove("hidden");
+});
+
+// Cancel
+cancelBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+// Confirm
+confirmBtn.addEventListener("click", () => {
+  window.location.href = "/signup";  // Redirect to sign up
+});
+
+
