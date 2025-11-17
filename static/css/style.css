@@ -183,7 +183,7 @@ Main
 }
 .notif-icon {
   font-size: 24px;
-  color: var(--text-dark);
+  color: var(--text-light);
 }
 .notif-badge {
   position: absolute;
@@ -222,7 +222,7 @@ Main
   padding: 10px 12px;
   border-bottom: 1px solid #f1f5f9;
   font-size: 13px;
-  color: var(--text-dark);
+  color: var(--text-light);
 }
 .notif-item small {
   display: block;

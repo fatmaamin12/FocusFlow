@@ -8,10 +8,11 @@ if (localStorage.getItem("theme") === "dark") {
 /*****************************
  * ✅ Team Page Script
  *****************************/
-
+//This finds the HTML container where the team cards will be inserted.
 const teamGrid = document.getElementById("teamGrid");
 
 // Team data — later we can move this to localStorage
+//array of objects
 const teamMembers = [
   { name: "Sofia", role: "UI/UX Designer", img: "https://i.pravatar.cc/50?img=1", status: "online" },
   { name: "Ali", role: "Frontend Developer", img: "https://i.pravatar.cc/50?img=2", status: "online" },
@@ -24,9 +25,9 @@ const teamMembers = [
 /* ---------- Render team grid ---------- */
 function renderTeam() {
   teamGrid.innerHTML = teamMembers
-    .map(member => {
+    .map(member => {  //loops through the team list and produces a card for each member
       const dotColor = member.status === "online" ? "#2ecc71" : "#bbb";
-      
+      //This builds each team card:
       return `
         <div class="team-card">
           <img src="${member.img}" alt="${member.name}">
@@ -41,6 +42,7 @@ function renderTeam() {
         </div>
       `;
     })
+    //Convert all cards into HTML
     .join("");
 }
 

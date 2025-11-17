@@ -31,12 +31,14 @@ const modal = document.getElementById("deleteModal");
 const cancelBtn = document.getElementById("cancelDelete");
 const confirmBtn = document.getElementById("confirmDelete");
 
-// Open modal
+// Open modal The modal becomes visible
+
 deleteBtn.addEventListener("click", () => {
   modal.classList.remove("hidden");
 });
 
-// Cancel
+// Cancel Modal hides again
+
 cancelBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
 });
