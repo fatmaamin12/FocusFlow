@@ -137,6 +137,7 @@ input:checked + .slider {
 
 .settings-link{
   color: #fb4d2b;
+  cursor: pointer;
 }
 
 input:checked + .slider:before {

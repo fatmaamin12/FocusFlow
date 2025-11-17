@@ -1,13 +1,16 @@
+/*************************************************
+ * FOCUS FLOW — TASK MANAGER (FULL FIXED VERSION)
+ *************************************************/
+
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark");
 }
 
-/******************************
- * ✅ Focus Flow Task Manager
- ******************************/
-
 document.addEventListener("DOMContentLoaded", () => {
-  /* === DOM ELEMENTS === */
+
+  /***************************
+   * DOM ELEMENTS
+   ***************************/
   const taskList = document.getElementById("taskList");
   const tabs = document.querySelectorAll(".task-tab");
 
@@ -20,81 +23,85 @@ document.addEventListener("DOMContentLoaded", () => {
   const taskDescInput = document.getElementById("taskDescInput");
   const taskStatusInput = document.getElementById("taskStatusInput");
 
-  /* === DEFAULT TASKS === */
-  const defaultTasks = [
-    {
-      id: 1,
-      tag: "UI Design",
-      title: "Landing Page Design",
-      desc: "Starting a new business feels like juggling while riding a unicycle",
-      status: "coming-next",
-      priority: "high",
-      dueDate: "2025-01-15",
-      comments: 2,
-      files: 2,
-      progress: 0,
-      totalSubtasks: 5,
-      completedSubtasks: 0
-    },
-    {
-      id: 2,
-      tag: "Frontend",
-      title: "Dashboard Layout",
-      desc: "Build UI for admin dashboard pages",
-      status: "in-progress",
-      priority: "medium",
-      dueDate: "2025-01-20",
-      comments: 4,
-      files: 1,
-      progress: 60,
-      totalSubtasks: 8,
-      completedSubtasks: 5
-    },
-    {
-      id: 3,
-      tag: "Testing",
-      title: "Unit Tests",
-      desc: "Write comprehensive unit tests for core modules",
-      status: "completed",
-      priority: "medium",
-      dueDate: "2025-01-12",
-      comments: 1,
-      files: 0,
-      progress: 100,
-      totalSubtasks: 12,
-      completedSubtasks: 12
+  let tasks = [];  //Tasks from the JSON file will be stored here after loading.
+
+  /***************************
+   * URL FILTER (from dashboard)
+   ***************************/
+
+  //This makes your dashboard → tasks connection work.
+  const params = new URLSearchParams(window.location.search);
+  let initialFilter = params.get("filter") || "all";
+
+
+  /***************************
+   * LOAD TASKS FROM JSON
+   ***************************/
+
+  //load tasks from server converts it to js
+  async function loadTasks() {
+    const res = await fetch("/get_tasks");
+    if (!res.ok) {
+      console.error("Failed to load tasks JSON");
+      return;
     }
-  ];
 
-  /* === LOAD OR INITIALIZE TASKS === */
-  let tasks = JSON.parse(localStorage.getItem("focusflowTasks")) || defaultTasks;
+    tasks = await res.json().catch(err => {
+      console.error("JSON parse error:", err);
+      tasks = [];
+    });
+  }
 
-  /* === HELPER FUNCTIONS === */
+
+  /***************************
+   * SAVE TASKS TO SERVER JSON
+   ***************************/
+  function saveTasksToServer() {
+    fetch("/save_tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tasks)
+    });
+  }
+
+
+  /***************************
+   * STATUS MAPPER
+   ***************************/
   function mapStatus(filter) {
-    if (filter === "ongoing") return "in-progress";
+    if (filter === "in-progress") return "in-progress";
     if (filter === "coming-next") return "coming-next";
     if (filter === "completed") return "completed";
     return filter;
   }
 
-  function saveTasks() {
-    localStorage.setItem("focusflowTasks", JSON.stringify(tasks));
-  }
 
-  /* === RENDER TASKS === */
+  /***************************
+   * RENDER TASKS
+   ***************************/
   function renderTasks(filter = "all") {
+    // Clear old tasks
     taskList.innerHTML = "";
 
+    // Auto-progress logic
+    tasks = tasks.map(t => {
+      //Auto-update progress bar
+      if (t.status === "completed") t.progress = 100;
+      else if (t.status === "in-progress") t.progress = 50;
+      else if (t.status === "coming-next") t.progress = 0;
+      return t;
+    });
+    //Filtering
     const filtered =
       filter === "all" ? tasks : tasks.filter(t => t.status === mapStatus(filter));
-
+5
     if (filtered.length === 0) {
       taskList.innerHTML = `<p class="empty-text">No tasks found.</p>`;
       return;
     }
 
     filtered.forEach(task => {
-      const formattedDate = new Date(task.dueDate).toLocaleDateString("en-US", {
+      const formattedDate = new Date(task.date || task.dueDate).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
         year: "numeric"
@@ -112,13 +119,18 @@ document.addEventListener("DOMContentLoaded", () => {
         low: "green"
       };
 
-      const statusDisplay = task.status.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase());
+      const statusDisplay = task.status.replace("-", " ")
+        .replace(/\b\w/g, l => l.toUpperCase());
+        
+        //Create the HTML for each task
 
-      taskList.innerHTML += `
+      taskList.innerHTML += `.
         <div class="task-item">
           <div class="task-item-header">
-            <span class="task-tag-small ${task.tag.toLowerCase().replace(" ", "-")}">${task.tag}</span>
-            <span class="priority-badge-small ${priorityColors[task.priority]}">${task.priority}</span>
+            <span class="task-tag-small">${task.tag || "General"}</span>
+            <span class="priority-badge-small ${priorityColors[task.priority] || "yellow"}">
+              ${task.priority || "medium"}
+            </span>
           </div>
 
           <div class="task-item-content">
@@ -144,6 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
               <span><i class="bx bx-message-rounded"></i> ${task.comments}</span>
               <span><i class="bx bx-paperclip"></i> ${task.files}</span>
             </div>
+
+            <div class="task-actions">
+              <button class="task-edit-btn" data-id="${task.id}">Edit</button>
+              <button class="task-delete-btn" data-id="${task.id}">Delete</button>
+            </div>
+
             <span class="badge ${statusColors[task.status]}">${statusDisplay}</span>
           </div>
         </div>
@@ -151,36 +169,66 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* === FILTER TABS === */
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelector(".task-tab.active")?.classList.remove("active");
-      tab.classList.add("active");
-      renderTasks(tab.dataset.filter);
-    });
+
+  /***************************
+   * DELETE TASK (with confirm)
+   ***************************/
+  taskList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("task-delete-btn")) {
+
+      const confirmDelete = confirm("Are you sure you want to delete this task?");
+      if (!confirmDelete) return;
+
+      const id = Number(e.target.dataset.id);
+      tasks = tasks.filter(t => t.id !== id);
+
+      saveTasksToServer();
+      renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
+    }
   });
 
-  /* === MODAL CONTROLS === */
-  addTaskBtn.addEventListener("click", () => {
-    taskModal.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
+
+  /***************************
+   * EDIT TASK
+   ***************************/
+  taskList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("task-edit-btn")) {
+
+      const id = Number(e.target.dataset.id);
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      taskTitleInput.value = task.title;
+      taskDescInput.value = task.desc;
+      taskStatusInput.value = task.status;
+
+      taskModal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+
+      saveTaskBtn.onclick = () => {
+
+        task.title = taskTitleInput.value.trim();
+        task.desc = taskDescInput.value.trim();
+        task.status = taskStatusInput.value;
+
+        // auto progress
+        if (task.status === "completed") task.progress = 100;
+        else if (task.status === "in-progress") task.progress = 50;
+        else task.progress = 0;
+
+        saveTasksToServer();
+        closeModal();
+        renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
+      };
+    }
   });
 
-  closeTaskModal.addEventListener("click", closeModal);
-  taskModal.addEventListener("click", e => {
-    if (e.target === taskModal) closeModal();
-  });
 
-  function closeModal() {
-    taskModal.classList.add("hidden");
-    document.body.style.overflow = "auto";
-    taskTitleInput.value = "";
-    taskDescInput.value = "";
-    taskStatusInput.value = "ongoing";
-  }
-
-  /* === SAVE NEW TASK === */
+  /***************************
+   * ADD NEW TASK
+   ***************************/
   saveTaskBtn.addEventListener("click", () => {
+
     const title = taskTitleInput.value.trim();
     if (!title) return alert("Please enter a task title");
 
@@ -192,9 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
       tag: "New Task",
       title,
       desc,
-      status: status === "ongoing" ? "in-progress" : status,
+      status,
       priority: "medium",
-      dueDate: new Date().toISOString().split("T")[0],
+      date: new Date().toISOString().split("T")[0],
       comments: 0,
       files: 0,
       progress: 0,
@@ -203,11 +251,54 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     tasks.unshift(newTask);
-    saveTasks();
+    saveTasksToServer();
     closeModal();
     renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
   });
 
-  /* === INITIALIZE === */
-  renderTasks("all");
-});
+
+  /***************************
+   * FILTER TABS
+   ***************************/
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelector(".task-tab.active")?.classList.remove("active");
+      tab.classList.add("active");
+      renderTasks(tab.dataset.filter);
+    });
+  });
+
+
+  /***************************
+   * MODAL CONTROL
+   ***************************/
+  function closeModal() {
+    taskModal.classList.add("hidden");
+    taskTitleInput.value = "";
+    taskDescInput.value = "";
+    taskStatusInput.value = "in-progress";
+    document.body.style.overflow = "auto";
+    saveTaskBtn.onclick = null; // IMPORTANT
+  }
+
+  addTaskBtn.addEventListener("click", () => {
+    taskModal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  });
+
+  closeTaskModal.addEventListener("click", closeModal);
+
+
+  /***************************
+   * INITIAL LOAD + FILTER
+   ***************************/
+  loadTasks().then(() => {
+    renderTasks(initialFilter);
+
+    // highlight correct tab
+    document.querySelector(".task-tab.active")?.classList.remove("active");
+    const tab = document.querySelector(`.task-tab[data-filter="${initialFilter}"]`);
+    if (tab) tab.classList.add("active");
+  });
+
+}); // END DOMContentLoaded

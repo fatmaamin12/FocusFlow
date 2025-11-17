@@ -25,8 +25,8 @@
     {% if error and not show_signup %}
       <div class="error-msg">{{ error }}</div>
     {% endif %}
-
-    <form action="/login" method="POST" class="auth-form">
+    
+    <form action="/login" method="POST" id="loginForm" class="auth-form">
       <div class="input-box">
         <input type="email" name="email" placeholder="Email" required>
       </div>
@@ -49,8 +49,8 @@
     {% if error and show_signup %}
       <div class="error-msg">{{ error }}</div>
     {% endif %}
-
-    <form action="/signup" method="POST" class="auth-form">
+    
+    <form action="/signup" method="POST" id="signupForm" class="auth-form">
       <div class="input-box">
         <input type="text" name="name" placeholder="Full Name" required>
       </div>
@@ -100,49 +100,60 @@ const loginForm = document.getElementById("loginForm");
 
 // Handle signup
 if (signupForm) {
-  signupForm.addEventListener("submit", function(e) {
-    e.preventDefault();
+  // signupForm.addEventListener("submit", function(e) {
+  //   e.preventDefault();
 
-    const name = signupForm.querySelector("input[name='name']").value;
-    const email = signupForm.querySelector("input[name='email']").value;
-    const password = signupForm.querySelector("input[name='password']").value;
+  //   const nameField = signupForm.querySelector("input[name='name']");
+  //   const fullName = nameField.value.trim();
 
-    const user = { name, email, password };
+  //   // VALIDATION: must contain at least TWO words
+  //   const nameParts = fullName.split(" ").filter(part => part.length > 0);
 
-    // Save in localStorage
+  //   if (nameParts.length < 2) {
+  //     alert("Please enter your full name (first and last name).");
+  //     nameField.focus();
+  //     return; 
+  //   }
+
+    // Continue normally
+    const email = signupForm.querySelector("input[name='email']").value.trim();
+    const password = signupForm.querySelector("input[name='password']").value.trim();
+
+    const user = { name: fullName, email, password };
     localStorage.setItem("user", JSON.stringify(user));
 
     alert("Account created successfully 🎉");
 
-    // Switch to login box after signup
     signupBox.classList.add("hidden");
     loginBox.classList.remove("hidden");
-  });
+ 
 }
+
+
 
 // Handle login
 if (loginForm) {
-  loginForm.addEventListener("submit", function(e) {
-    e.preventDefault();
+  // loginForm.addEventListener("submit", function(e) {
+  //   e.preventDefault();
 
-    const email = loginForm.querySelector("input[name='email']").value;
-    const password = loginForm.querySelector("input[name='password']").value;
+  //   const email = loginForm.querySelector("input[name='email']").value;
+  //   const password = loginForm.querySelector("input[name='password']").value;
 
-    const savedUser = JSON.parse(localStorage.getItem("user"));
+  //   const savedUser = JSON.parse(localStorage.getItem("user"));
 
-    if (!savedUser) {
-      alert("No account found. Please sign up first.");
-      return;
-    }
+  //   if (!savedUser) {
+  //     alert("No account found. Please sign up first.");
+  //     return;
+  //   }
 
-    if (email === savedUser.email && password === savedUser.password) {
-      alert(`Welcome back, ${savedUser.name}! ✅`);
-      // You can redirect to dashboard.html here:
-      window.location.href = "/dashboard"; // or dashboard.html if static
-    } else {
-      alert("Incorrect email or password ❌");
-    }
-  });
+  //   if (email === savedUser.email && password === savedUser.password) {
+  //     alert(`Welcome back, ${savedUser.name}! ✅`);
+  //     // You can redirect to dashboard.html here:
+  //     window.location.href = "/dashboard"; // or dashboard.html if static
+  //   } else {
+  //     alert("Incorrect email or password ❌");
+  //   }
+  // });
 }
 
 

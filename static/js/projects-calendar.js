@@ -10,12 +10,15 @@ if (localStorage.getItem("theme") === "dark") {
  ****************************/
 
 // DOM Elements
+// The month header
+// The next/previous buttons
+// The box where days are rendered
 const monthYear = document.getElementById("monthYear");
 const calendarDays = document.getElementById("calendarDays");
 const prevBtn = document.getElementById("prevMonth");
 const nextBtn = document.getElementById("nextMonth");
 
-// Modal
+// modal elements for viewing/editing tasks:
 const modal = document.getElementById("taskModal");
 const closeModalBtn = document.getElementById("closeModal");
 const modalTitle = document.getElementById("modalTitle");
@@ -32,7 +35,11 @@ const editTaskBtn = document.getElementById("editTaskBtn");
 const deleteTaskBtn = document.getElementById("deleteTaskBtn");
 const saveTaskBtn = document.getElementById("saveTaskBtn");
 
-// STATE
+// These remember:
+// Which month you're looking at
+// Which day the user clicked
+// Which task they clicked from that day
+
 let currentDate = new Date();
 let selectedDate = null;
 let selectedTaskIndex = null;
@@ -48,9 +55,10 @@ const TAG_COLORS = {
 
 // Load tasks
 let tasks = JSON.parse(localStorage.getItem("calendarTasks")) || {};
-
+// Each date has an array of tasks
+// Each date string is a key
 // ✅ Seed default tasks once if storage is empty
-if (!tasks || Object.keys(tasks).length === 0) {
+if (!tasks || Object.keys(tasks).length === 0) { 
   tasks = {
     "2025-11-12": [
       {
@@ -71,14 +79,14 @@ if (!tasks || Object.keys(tasks).length === 0) {
 }
 
 // Helpers
-function saveTasks() {
+function saveTasks() { //Save tasks to localStorage
   localStorage.setItem("calendarTasks", JSON.stringify(tasks));
 }
-
+//format date 
 function fmtDate(y, m, d) {
   return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
-
+//get today as a string
 function todayStr() {
   return new Date().toISOString().split("T")[0];
 }
@@ -160,8 +168,10 @@ function renderCalendar() {
         </div>`;
     }
   }
-
-  setTimeout(attachEvents, 0);
+  setTimeout(() => {
+    attachEvents();
+    enableDrag();  // 🔥 THIS WAS MISSING
+    }, 0);
 }
 
 /********* EVENTS *********/
@@ -329,3 +339,5 @@ nextBtn.onclick = () => {
 
 // INIT
 renderCalendar();
+
+

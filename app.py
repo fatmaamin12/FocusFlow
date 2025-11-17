@@ -1,10 +1,25 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
+import json
+import os
 
 app = Flask(__name__)
 app.secret_key = "focusflow_secret_key"
 
-# TEMP user storage (replace later with real DB or API)
 users = {}
+
+# Path to tasks file
+TASKS_FILE = "tasks.json"
+
+def load_json_tasks():
+    if not os.path.exists(TASKS_FILE):
+        return []
+    with open(TASKS_FILE, "r") as f:
+        return json.load(f)
+
+def save_json_tasks(tasks):
+    with open(TASKS_FILE, "w") as f:
+        json.dump(tasks, f, indent=2)
+
 
 @app.route("/")
 def home():
@@ -17,46 +32,27 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        # Check if user exists
         if email in users and users[email]["password"] == password:
             session["user"] = users[email]["name"]
             return redirect("/dashboard")
-        else:
-            return render_template("auth.html", error="Invalid email or password")
+        
+        return render_template("auth.html", error="Invalid credentials")
 
     return render_template("auth.html")
 
 
-@app.route("/signup", methods=["GET", "POST"])
+@app.route("/signup", methods=["POST"])
 def signup():
-    if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        password = request.form["password"]
+    name = request.form["name"]
+    email = request.form["email"]
+    password = request.form["password"]
 
-        # Check existing email
-        if email in users:
-            return render_template("auth.html", error="Email already exists")
+    if email in users:
+        return render_template("auth.html", error="Email already exists", show_signup=True)
 
-        # Save user in memory
-        users[email] = {"name": name, "password": password}
-        return redirect("/signup")
+    users[email] = {"name": name, "password": password}
 
-    # GET -> show signup/login page (auth.html)
-    return render_template("auth.html")
-
-@app.route("/delete-account", methods=["POST", "GET"])
-def delete_account():
-    # If you want to actually delete the user from `users`, do it here.
-    # Example (if you stored email in session): 
-    # email = session.get("email")
-    # if email in users: del users[email]
-
-    # For now just clear session (log user out)
-    session.clear()
-
-    # Redirect to the signup page (ensure /signup supports GET as in Option A)
-    return redirect("/signup")
+    return render_template("auth.html", success="Account created! Please login.")
 
 
 
@@ -81,33 +77,47 @@ def tasks():
     return render_template("tasks.html", user=session["user"])
 
 
+# 🔥 Return tasks as proper JSON
+@app.route("/get_tasks")
+def get_tasks():
+    import json
+    from flask import jsonify
+
+    with open("tasks.json", "r") as f:
+        tasks = json.load(f)
+
+    return jsonify(tasks)
+
+
+# 🔥 Save tasks to JSON
+@app.route("/save_tasks", methods=["POST"])
+def save_tasks():
+    tasks = request.json
+    save_json_tasks(tasks)
+    return jsonify({"success": True})
+
+
 @app.route("/messages")
 def messages():
     if "user" not in session:
         return redirect("/login")
     return render_template("messages.html", user=session["user"])
 
-
 @app.route("/team")
 def team():
     if "user" not in session:
         return redirect("/login")
     return render_template("team.html", user=session["user"])
-
-
 @app.route("/settings")
 def settings():
     if "user" not in session:
         return redirect("/login")
     return render_template("settings.html", user=session["user"])
 
-
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

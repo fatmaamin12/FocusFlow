@@ -164,15 +164,16 @@ const tasks = [
 /********************************
       RENDER TASK CARDS
  ********************************/
-function renderTasks(searchTerm = "") { //empty string
-  const container = document.getElementById("taskContainer");
+function renderTasks(searchTerm = "") { //This entire function is responsible for drawing the task cards on the dashboard.
+
+  const container = document.getElementById("taskContainer");  //This is where all task cards will appear.
   if (!container) return;
 
   // Filter tasks based on search term
   let filteredTasks = tasks;  //If user typed something in search , filter the list
-  if (searchTerm.trim() !== "") {
+  if (searchTerm.trim() !== "") { //✔ Live search
     const searchLower = searchTerm.toLowerCase(); //Converts the search term to lowercase
-    filteredTasks = tasks.filter(task => {  
+    filteredTasks = tasks.filter(task => {    //Uses .map() to convert each task into:
       return (
         task.title.toLowerCase().includes(searchLower) ||
         task.desc.toLowerCase().includes(searchLower) ||
@@ -319,7 +320,7 @@ function updateStatusPills() {
 /********************************
  * 🔗 STATUS PILL CLICK HANDLERS
  ********************************/
-function setupStatusPillClickHandlers() {
+function setupStatusPillClickHandlers() { //Each pill becomes clickable.
   const pills = document.querySelectorAll(".status-pill");
   
   pills.forEach((pill, index) => {
@@ -348,13 +349,13 @@ function setupSearch() {
   // Real-time search as user types
   searchInput.addEventListener("input", (e) => {
     const searchTerm = e.target.value;
-    renderTasks(searchTerm);
+    renderTasks(searchTerm);  //Which redraws the dashboard instantly.
   });
 
   // Clear search on Escape key
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      searchInput.value = "";
+  searchInput.addEventListener("keydown", (e) => {  //"When the user presses a key inside the search input, run this function."
+    if (e.key === "Escape") { //Here we check if it was Escape (Esc) on the keyboard.
+      searchInput.value = "";  //If Escape was pressed → clear the search box
       renderTasks("");
     }
   });
@@ -363,8 +364,9 @@ function setupSearch() {
 /********************************
  * 🚀 INIT
  ********************************/
-renderTasks();
-renderProjects();
-updateStatusPills();
-setupStatusPillClickHandlers();
-setupSearch();
+renderTasks();  //Draw all tasks
+renderProjects(); //Draw all projects
+updateStatusPills(); //Update pill numbers
+setupStatusPillClickHandlers(); //Activate pill clicking
+setupSearch();  //Activate search bar
+

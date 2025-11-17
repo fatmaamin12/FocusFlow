@@ -84,7 +84,7 @@ body.dark .messages-wrapper {
 .modal.hidden { display: none; }
 
 .modal-content {
-  background: #fff;
+  background: var(--bg);
   padding: 22px;
   width: min(92vw, 420px);
   border-radius: 14px;
@@ -98,7 +98,7 @@ body.dark .messages-wrapper {
 
 .modal-content input {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--text-light);
   border-radius: 8px;
   width: 100%;
 }
@@ -107,7 +107,7 @@ body.dark .messages-wrapper {
   margin-bottom: 6px;
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-light);
 }
 
 .modal-actions {

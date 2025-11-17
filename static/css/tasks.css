@@ -257,6 +257,68 @@
 }
 .close-btn:hover { background: #f3f4f6; }
 
+#taskMessageBox {
+  display: none;
+  padding: 12px 16px;
+  margin: 15px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#taskMessageBox.show-success {
+  display: block;
+  background: #d4f7d4;
+  color: #1b5e20;
+}
+
+#taskMessageBox.show-error {
+  display: block;
+  background: #ffd4d4;
+  color: #7f0000;
+}
+/* ---------------------------
+   Task Card - Action Buttons
+------------------------------ */
+.task-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.task-edit-btn,
+.task-delete-btn {
+    padding: 6px 16px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s ease-in-out;
+}
+
+/* Edit Button */
+.task-edit-btn {
+    background: #E3EFFE;
+    color: #3A7BFF;
+}
+
+.task-edit-btn:hover {
+    background: #d3e3ff;
+}
+
+/* Delete Button */
+.task-delete-btn {
+    background: #FFE3E3;
+    color: #FF4A4A;
+}
+
+.task-delete-btn:hover {
+    background: #ffcece;
+}
+
+
+
 @keyframes modal-pop {
   from { transform: translateY(8px) scale(0.98); opacity: 0 }
   to { transform: translateY(0) scale(1); opacity: 1 }
