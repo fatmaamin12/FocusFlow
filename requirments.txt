@@ -1,0 +1,129 @@
+
+FULL PROJECT REQUIREMENTS (From PDF)
+
+====================================================
+1. GENERAL PROJECT REQUIREMENTS
+====================================================
+- Project must be available on GitHub with regular commits.
+- Project must run locally using Flask.
+- Project must be original work.
+- Must demonstrate full understanding of all features.
+
+====================================================
+2. BACKEND REQUIREMENTS
+====================================================
+- Use Flask as the backend framework.
+- Must include at least one Python Standard Library module other than 'random'
+  Examples: os, datetime, json, pathlib, re, uuid
+- Must contain at least one Python class:
+    * Includes properties
+    * Includes methods
+    * Uses __init__() to initialize object state
+- Must include persistent storage:
+    * tasks.json
+    * users.json
+- Backend must:
+    * Load and save JSON data
+    * Handle authentication (login, signup, logout)
+    * Serve all required pages
+    * Provide API endpoints (/get_tasks, /save_tasks)
+    * Handle sessions or user state
+
+====================================================
+3. FRONTEND REQUIREMENTS
+====================================================
+Pages must include dynamic JavaScript functionality:
+- DOM manipulation
+- Event listeners
+- Fetch API to backend
+- Modal windows
+- Editing and deleting items
+- Drag & drop (Calendar)
+- Live search (Dashboard)
+- Filtering (Tasks Page)
+- Navigation between pages
+
+UI Requirements:
+- Responsive design
+- Clean layout
+- Multiple HTML pages
+- Dark mode support
+
+====================================================
+4. PAGES REQUIRED
+====================================================
+Your project includes all required pages:
+- Dashboard Page
+- Tasks Page
+- Projects Page (Calendar)
+- Settings Page
+- Login Page
+- Signup Page
+
+====================================================
+5. GITHUB REQUIREMENTS
+====================================================
+- README.md included
+- requirements.txt included
+- Organized folder structure
+- Frequent commits (not one big commit)
+- No unnecessary files or large media files
+- No plagiarism
+
+====================================================
+6. SUBMISSION REQUIREMENTS
+====================================================
+Your submission must include:
+- GitHub repository link
+- All project files
+- JSON storage files
+- At least one Python class
+- requirements.txt
+- README.md
+- The app must run without errors
+
+====================================================
+7. SUMMARY CHECKLIST (Everything Your Project Has)
+====================================================
+BACKEND CHECKLIST:
+[x] Flask application
+[x] Standard Library modules (os, json, datetime)
+[x] Python class with __init__ and methods
+[x] JSON data persistence
+[x] Session handling (login/logout)
+[x] API endpoints
+[x] Clean routing
+
+FRONTEND CHECKLIST:
+[x] Dynamic JavaScript
+[x] Calendar drag + drop
+[x] Task modal forms
+[x] Live search
+[x] Dashboard widgets
+[x] Navigation UI
+
+GITHUB CHECKLIST:
+[x] Frequent commits
+[x] README.md
+[x] requirements.txt
+[x] Organized files
+
+SUBMISSION CHECKLIST:
+[x] Runs locally
+[x] Includes all pages
+[x] Includes required backend features
+[x] Meets PDF requirements
+
+====================================================
+8. requirements.txt (Based on PDF)
+====================================================
+Flask==3.0.0
+
+(Optional professional version)
+Werkzeug>=3.0.0
+Jinja2>=3.1.2
+itsdangerous>=2.1.2
+
+====================================================
+END OF REQUIREMENTS FILE
+====================================================
