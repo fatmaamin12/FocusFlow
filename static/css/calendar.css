@@ -1,0 +1,355 @@
+/* ===============================
+   📅 CALENDAR LAYOUT & STYLE
+   =============================== */
+
+.calendar-container {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 16px;
+  margin-top: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+}
+
+.calendar-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.calendar-controls button {
+  border: none;
+  background: #eef2ff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calendar-controls h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.calendar-grid,
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.day-name {
+  font-weight: 600;
+  color: var(--text-light);
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+/* ===============================
+   🧩 DAY CELL STYLING
+   =============================== */
+
+.calendar-day {
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 6px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* TOP (number) / MIDDLE (tasks) / BOTTOM (+) */
+  background: var(--card-bg);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.calendar-day:hover {
+  background: #dbeafe;
+}
+
+.calendar-day.today {
+  border: 2px solid #707aff;
+  background: var(--bg);
+  font-weight: 600;
+}
+
+/* ===============================
+   🔢 DAY NUMBER
+   =============================== */
+
+.day-number {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text-light);
+  align-self: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===============================
+   🗂 TASK BOX (scrollable area)
+   =============================== */
+
+.task-box {
+  flex-grow: 1;
+  margin-top: 4px;
+  overflow-y: auto;
+  max-height: 70px;
+  padding-right: 2px;
+  box-sizing: border-box;
+}
+
+.cal-task {
+  background: #707aff;
+  color: white;
+  font-size: 11px;
+  padding: 3px 5px;
+  border-radius: 6px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+/* ===============================
+   ➕ ADD TASK BUTTON
+   =============================== */
+
+.add-task-btn {
+  background: #707aff;
+  color: #fff;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 20px;
+  align-self: flex-start;
+  margin-top: 6px;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.add-task-btn:hover {
+  transform: scale(1.1);
+  background-color: var(--blue);
+}
+
+/* Disabled button state */
+.disabled-task {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Past day fade effect */
+.calendar-day.past-day .add-task-btn {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+
+/* Disabled task style */
+.disabled-task {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Small event dot (optional visual indicator) */
+.event-dot {
+  height: 8px;
+  width: 8px;
+  background: var(--blue);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ===============================
+   🪟 MODAL STYLING
+   =============================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 14px;
+  width: min(92vw, 420px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+  animation: modal-pop 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.close-btn {
+  float: right;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  border-radius: 8px;
+  padding: 4px 8px;
+  color: #374151;
+}
+
+.close-btn:hover {
+  background: #f3f4f6;
+}
+
+#modalTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 6px;
+  color: #111827;
+}
+
+#modalTasks {
+  margin-top: 12px;
+}
+
+#modalTasks .taskItem {
+  padding: 10px;
+  margin-bottom: 8px;
+  background: #eef5ff;
+  border-left: 4px solid #2531cc;
+  border-radius: 8px;
+}
+
+/* ===============================
+   🎬 MODAL ANIMATION
+   =============================== */
+
+@keyframes modal-pop {
+  from {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===============================
+   ⚙️ MODAL BUTTONS
+   =============================== */
+
+.modal-actions,
+#modalActions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.modal-actions .cancel,
+#modalActions .cancel {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.modal-actions .create,
+#modalActions button {
+  background: #2531cc;
+  color: #fff;
+}
+
+.modal-actions button,
+#modalActions button,
+#editForm button {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.modal-actions button:hover,
+#modalActions button:hover,
+#editForm button:hover {
+  transform: translateY(-1px);
+}
+
+.modal-actions button:active,
+#modalActions button:active,
+#editForm button:active {
+  transform: translateY(0);
+}
+
+/* ===============================
+   📝 MODAL FORM ELEMENTS
+   =============================== */
+
+#editForm input,
+#editForm textarea,
+#editForm select {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font: inherit;
+  background: #fff;
+}
+
+#editForm textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* ===============================
+   ⚙️ ACCESSIBILITY & REDUCED MOTION
+   =============================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-content {
+    animation: none;
+  }
+
+  .modal-actions button,
+  #modalActions button,
+  #editForm button {
+    transition: none;
+  }
+}
+
+/* ===============================
+   📱 RESPONSIVE DESIGN
+   =============================== */
+
+@media (max-width: 900px) {
+  .calendar-grid,
+  .calendar-days {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .calendar-grid,
+  .calendar-days {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .calendar-day {
+    min-height: 110px;
+  }
+}

@@ -1,0 +1,153 @@
+/* ======== Auth Page Styling ======== */
+
+:root {
+  --bg: #f5f7fb;
+  --card-bg: #ffffff;
+  --text-dark: #1e293b;
+  --text-light: #6b7280;
+  --blue: #2531cc;
+  --shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+body.dark {
+  --bg: #0a1220;
+  --card-bg: #0f172a;
+  --text-dark: #e2e8f0;
+  --text-light: #94a3b8;
+  --shadow: 0 12px 28px rgba(0,0,0,0.5);
+}
+
+/* Center wrapper */
+.auth-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+}
+
+/* Card box */
+.auth-box {
+  width: 380px;
+  background: var(--card-bg);
+  padding: 35px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: .3s;
+}
+
+.auth-box h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+
+.auth-box p {
+  font-size: 15px;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+
+/* Inputs */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  background: #fff;
+  outline: none;
+  transition: .2s;
+}
+
+.auth-form input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(37, 49, 204, 0.2);
+}
+
+/* Button */
+.auth-btn {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .2s;
+  box-shadow: 0 4px 12px rgba(37, 49, 204, 0.25);
+}
+
+.auth-btn:hover {
+  background: #1a2499;
+  transform: translateY(-2px);
+}
+
+.auth-btn:active {
+  transform: translateY(0);
+}
+
+/* Link to switch form */
+.switch {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.switch a {
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}
+
+/* Error message box */
+.error-msg {
+  background: #ffe5e5;
+  color: #b10000;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Hide signup */
+.hidden {
+  display: none !important;
+}
+
+/* Smooth card animation */
+.auth-box {
+  animation: fadeUp .35s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* For mobile */
+@media (max-width: 480px) {
+  .auth-box {
+    width: 90%;
+    padding: 25px;
+  }
+  .auth-box h1 { font-size: 22px; }
+  .auth-form input { font-size: 14px; }
+  .auth-btn { font-size: 14px; }
+}

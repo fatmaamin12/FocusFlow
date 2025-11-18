@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages | Focus Flow</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <i class='bx bx-target-lock'></i><span>Focus Flow</span>
+  </div>
+
+  <ul class="menu">
+    <li><a href="{{ url_for('dashboard') }}"><i class='bx bxs-dashboard'></i>Dashboard</a></li>
+    <li><a href="{{ url_for('projects') }}"><i class='bx bxs-folder'></i>Projects</a></li>
+    <li><a href="{{ url_for('tasks') }}"><i class='bx bx-task'></i>Tasks</a></li>
+    <li class="active"><a href="{{ url_for('messages') }}"><i class='bx bxs-message-dots'></i>Messages</a></li>
+    <li><a href="{{ url_for('team') }}"><i class='bx bxs-group'></i>Team</a></li>
+    <li><a href="{{ url_for('settings') }}"><i class='bx bxs-cog'></i>Settings</a></li>
+  </ul>
+
+  <div class="logout"><a href="{{ url_for('logout') }}"><i class="bx bx-log-out"></i>Logout</a></div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <header class="topbar">
+    <h2>Messages</h2>
+    <div class="top-right">
+      <div class="notifications">
+        <i class="bx bx-bell notif-icon"></i>
+        <span class="notif-badge"></span> <!--notification counter-->
+        <div class="notif-dropdown hidden">
+          <div class="notif-header">Notifications</div>
+          <div class="notif-list"></div>
+          <div class="notif-empty">You're all caught up 🎉</div>
+          <div class="notif-footer">
+            <button class="mark-read">Mark as read</button>
+            <button class="clear-all">Clear all</button>
+          </div>
+        </div>
+      </div>
+    
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="avatar">
+    </div>
+  </header>
+  <div class="messages-wrapper">
+    <div class="contacts">
+      <div class="contacts-header">
+        <h3>Contacts</h3>
+        <button id="newChatBtn" class="new-chat-btn">+</button>
+      </div>
+      <div id="contactsList">
+        <div class="contact active" data-user="sofia">
+          <img src="https://i.pravatar.cc/40?img=1">
+          <div><p class="name">Sofia</p><p class="last-msg">How’s it going?</p></div>
+        </div>
+        <div class="contact" data-user="ali">
+          <img src="https://i.pravatar.cc/40?img=2">
+          <div><p class="name">Ali</p><p class="last-msg">Finish UI tomorrow</p></div>
+        </div>
+        <div class="contact" data-user="mira">
+          <img src="https://i.pravatar.cc/40?img=3">
+          <div><p class="name">Mira</p><p class="last-msg">See you!</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-box">
+      <div id="chatArea" class="chat-area"></div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Type your message...">
+        <button id="sendBtn"><i class="bx bx-send"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New chat modal -->
+  <div id="newChatModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Start New Chat</h3>
+      <input id="newUserName" placeholder="Contact name">
+      <input id="newUserImg" placeholder="Avatar URL (optional)">
+      <div class="modal-actions">
+        <button id="cancelChat" class="cancel">Cancel</button>
+        <button id="createChat" class="create">Create</button>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+
+</body>
+</html>
