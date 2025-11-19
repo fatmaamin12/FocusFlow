@@ -8,7 +8,9 @@ const themeToggle = document.getElementById("themeToggle");
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme === "dark") {
   document.body.classList.add("dark");
+  if(themeToggle){
   themeToggle.checked = true;
+  }
 }
 
 // Listen for toggle switch change
@@ -26,21 +28,24 @@ themeToggle?.addEventListener("change", () => {
 });
 
 const deleteBtn = document.getElementById("deleteAccountBtn");
-const modal = document.getElementById("deleteModal");
+const modalSettings = document.getElementById("deleteModal");
 const cancelBtn = document.getElementById("cancelDelete");
 const confirmBtn = document.getElementById("confirmDelete");
 
 // Open modal
+if(deleteBtn) {
 deleteBtn.addEventListener("click", () => {
-  modal.classList.remove("hidden");
-});
+  modalSettings.classList.remove("hidden");
+}); }
 
 // Cancel: close modal
+if(cancelBtn){
 cancelBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-});
+  modalSettings.classList.add("hidden");
+});}
 
 // Confirm delete
+if(confirmBtn){
 confirmBtn.addEventListener("click", () => {
   fetch("/delete_account", {
     method: "POST",
@@ -53,7 +58,7 @@ confirmBtn.addEventListener("click", () => {
     }
   })
   .catch(err => console.error("Delete error:", err));
-});
+});}
 
 
 

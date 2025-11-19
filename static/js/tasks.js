@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const taskTitleInput = document.getElementById("taskTitleInput");
   const taskDescInput = document.getElementById("taskDescInput");
   const taskStatusInput = document.getElementById("taskStatusInput");
+  const taskTotalSubtasks = document.getElementById("taskTotalSubtasks");
+  const taskCompletedSubtasks = document.getElementById("taskCompletedSubtasks");
 
   let tasks = [];
   let editingTaskId = null;
@@ -33,28 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
    **********************/
   async function loadTasks() {
     const res = await fetch("/get_tasks");
-    if (!res.ok) {
-      console.error("Failed to load tasks JSON");
-      tasks = [];
-      return;
-    }
-    tasks = await res.json().catch(err => {
-      console.error("JSON parse error:", err);
-      tasks = [];
-    });
+    if (!res.ok) return (tasks = []);
+    tasks = await res.json().catch(() => []);
   }
 
   async function saveTasksToServer() {
     const res = await fetch("/save_tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tasks)
+      body: JSON.stringify(tasks),
     });
     if (res.ok) {
-      // notify other pages
       localStorage.setItem("tasksUpdated", Date.now());
-    } else {
-      console.error("Failed to save tasks to server");
     }
   }
 
@@ -73,12 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderTasks(filter = "all") {
+    if (!taskList) return;
+
     taskList.innerHTML = "";
 
     tasks = tasks.map(t => {
       if (t.status === "completed") t.progress = 100;
       else if (t.status === "in-progress") t.progress = 50;
-      else if (t.status === "coming-next") t.progress = 0;
+      else t.progress = 0;
       return t;
     });
 
@@ -144,103 +138,125 @@ document.addEventListener("DOMContentLoaded", () => {
   /***********************
    * DELETE TASK
    ***********************/
-  taskList.addEventListener("click", (e) => {
-    if (e.target.classList.contains("task-delete-btn")) {
-      const confirmDelete = confirm("Are you sure you want to delete this task?");
-      if (!confirmDelete) return;
+  if (taskList) {
+    taskList.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("task-delete-btn")) return;
+
+      if (!confirm("Are you sure you want to delete this task?")) return;
 
       const id = Number(e.target.dataset.id);
       tasks = tasks.filter(t => t.id !== id);
+
       saveTasksToServer();
       renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
-    }
-  });
+    });
+  }
 
   /***********************
    * EDIT TASK
    ***********************/
-  taskList.addEventListener("click", (e) => {
-    if (!e.target.classList.contains("task-edit-btn")) return;
+  if (taskList) {
+    taskList.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("task-edit-btn")) return;
 
-    const id = Number(e.target.dataset.id);
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
+      const id = Number(e.target.dataset.id);
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
 
-    editingTaskId = id;
+      editingTaskId = id;
 
-    taskTitleInput.value = task.title || "";
-    taskDescInput.value = task.desc || "";
-    taskStatusInput.value = task.status || "in-progress";
-
-    taskModal.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  });
+      taskTitleInput.value = task.title || "";
+      taskDescInput.value = task.desc || "";
+      taskStatusInput.value = task.status || "in-progress";
+      taskTotalSubtasks.value = task.totalSubtasks || 0;
+      taskCompletedSubtasks.value = task.completedSubtasks || 0;
+      taskModal?.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    });
+  }
 
   /***********************
    * SAVE (ADD + EDIT)
    ***********************/
-  saveTaskBtn.addEventListener("click", async () => {
-    const title = taskTitleInput.value.trim();
-    if (!title) return alert("Please enter a task title");
+  if (saveTaskBtn) {
+    saveTaskBtn.addEventListener("click", async () => {
+      const title = taskTitleInput.value.trim();
+      if (!title) return alert("Please enter a task title");
 
-    const desc = taskDescInput.value.trim();
-    const status = taskStatusInput.value;
+      const desc = taskDescInput.value.trim();
+      const status = taskStatusInput.value;
 
-    if (editingTaskId !== null) {
-      const index = tasks.findIndex(t => t.id === editingTaskId);
-      if (index !== -1) {
-        tasks[index].title = title;
-        tasks[index].desc = desc;
-        tasks[index].status = status;
-        if (status === "completed") tasks[index].progress = 100;
-        else if (status === "in-progress") tasks[index].progress = 50;
-        else tasks[index].progress = 0;
+      // Edit mode
+      if (editingTaskId !== null) {
+        const index = tasks.findIndex(t => t.id === editingTaskId);
+        if (index !== -1) {
+          tasks[index].title = title;
+          tasks[index].desc = desc;
+          tasks[index].status = status;
+          tasks[index].progress =
+            status === "completed" ? 100 :
+            status === "in-progress" ? 50 : 0;
+          tasks[index].totalSubtasks = Number(taskTotalSubtasks.value) || 0;
+          tasks[index].completedSubtasks = Number(taskCompletedSubtasks.value) || 0;
+
+        }
+
+        await saveTasksToServer();
+        closeModal();
+        renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
+        editingTaskId = null;
+        return;
       }
 
+      // Create new task → today's date
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+
+      const newTask = {
+        id: Date.now(),
+        tag: "New Task",
+        title,
+        desc,
+        status,
+        priority: "medium",
+        date: todayStr,
+        comments: 0,
+        files: 0,
+        progress:
+        Number(taskTotalSubtasks.value) > 0
+        ? Math.floor((Number(taskCompletedSubtasks.value) / Number(taskTotalSubtasks.value)) * 100): 0,
+        totalSubtasks: Number(taskTotalSubtasks.value) || 0,
+        completedSubtasks: Number(taskCompletedSubtasks.value) || 0
+      };
+
+      tasks.unshift(newTask);
       await saveTasksToServer();
       closeModal();
       renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
-      editingTaskId = null;
-      return;
-    }
-
-    // New task created from Tasks page -> default to today
-    const today = new Date().toISOString().split("T")[0];
-
-    const newTask = {
-      id: Date.now(),
-      tag: "New Task",
-      title,
-      desc,
-      status,
-      priority: "medium",
-      date: today,
-      comments: 0,
-      files: 0,
-      progress: 0,
-      totalSubtasks: 0,
-      completedSubtasks: 0
-    };
-
-    tasks.unshift(newTask);
-    await saveTasksToServer();
-    closeModal();
-    renderTasks(document.querySelector(".task-tab.active")?.dataset.filter || "all");
-  });
+    });
+  }
 
   /***********************
-   * TABS & MODAL
+   * TABS
    ***********************/
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelector(".task-tab.active")?.classList.remove("active");
-      tab.classList.add("active");
-      renderTasks(tab.dataset.filter);
+  if (tabs.length > 0) {
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelector(".task-tab.active")?.classList.remove("active");
+        tab.classList.add("active");
+        renderTasks(tab.dataset.filter);
+      });
     });
-  });
+  }
 
+  /***********************
+   * MODAL
+   ***********************/
   function closeModal() {
-    taskModal.classList.add("hidden");
+    taskModal?.classList.add("hidden");
     taskTitleInput.value = "";
     taskDescInput.value = "";
     taskStatusInput.value = "in-progress";
@@ -248,16 +264,20 @@ document.addEventListener("DOMContentLoaded", () => {
     editingTaskId = null;
   }
 
-  addTaskBtn.addEventListener("click", () => {
-    editingTaskId = null;
-    taskModal.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  });
+  if (addTaskBtn) {
+    addTaskBtn.addEventListener("click", () => {
+      editingTaskId = null;
+      taskModal?.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    });
+  }
 
-  closeTaskModal.addEventListener("click", closeModal);
+  if (closeTaskModal) {
+    closeTaskModal.addEventListener("click", closeModal);
+  }
 
   /***********************
-   * LIVE SYNC (other pages)
+   * LIVE SYNC
    ***********************/
   window.addEventListener("storage", (e) => {
     if (e.key === "tasksUpdated") {
@@ -272,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTasks(initialFilter);
     document.querySelector(".task-tab.active")?.classList.remove("active");
     const tab = document.querySelector(`.task-tab[data-filter="${initialFilter}"]`);
-    if (tab) tab.classList.add("active");
+    tab?.classList.add("active");
   });
 
-}); // END DOMContentLoaded
+});

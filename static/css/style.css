@@ -268,7 +268,7 @@ Main
     border:none;
     background:none;
     outline:none;
-    color:var(--text-dark);
+    color:var(--text-light);
 }
 
 .avatar{

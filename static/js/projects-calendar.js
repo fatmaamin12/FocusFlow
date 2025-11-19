@@ -4,7 +4,7 @@ if (localStorage.getItem("theme") === "dark") {
 }
 
 /****************************
- * PROJECTS CALENDAR SCRIPT (SYNCED)
+ * PROJECTS CALENDAR SCRIPT 
  ****************************/
 
 const monthYear = document.getElementById("monthYear");
@@ -45,8 +45,13 @@ let tasks = []; // will be loaded from server
 function fmtDate(y, m, d) {
   return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
+
 function todayStr() {
-  return new Date().toISOString().split("T")[0];
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 async function loadTasksFromServer() {
@@ -65,7 +70,7 @@ async function saveTasksToServer() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(tasks)
   });
-  if (res.ok) localStorage.setItem("tasksUpdated", Date.now());
+  // if (res.ok) localStorage.setItem("tasksUpdated", Date.now());
 }
 
 function buildDateMap() {
@@ -83,11 +88,14 @@ function buildDateMap() {
 function renderCalendar() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
-  monthYear.textContent = currentDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric"
-  });
+  if (monthYear) {
+    monthYear.textContent = currentDate.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric"
+    });
+  } else {
+    return;  
+  }
 
   const firstDay = new Date(year, month, 1);
   let startDay = firstDay.getDay();
@@ -170,9 +178,10 @@ function attachEvents() {
 /********* MODAL CONTROLS *********/
 function showModal() { modal.classList.add("open"); }
 function hideModal() { modal.classList.remove("open"); selectedTaskId = null; selectedDate = null; }
-
+if(closeModalBtn){
 closeModalBtn.onclick = hideModal;
 window.addEventListener("click", e => { if (e.target === modal) hideModal(); });
+}
 
 /********* OPEN EXISTING TASK BY ID *********/
 function openTaskById(id) {
@@ -216,11 +225,13 @@ function newTask(date) {
 }
 
 /********* EDIT / SAVE (calendar modal) *********/
+if(editTaskBtn){
 editTaskBtn.onclick = () => {
   editForm.style.display = "block";
   modalActions.style.display = "none";
-};
+};}
 
+if(saveTaskBtn){
 saveTaskBtn.onclick = async () => {
   const title = editTitle.value.trim();
   if (!title) return alert("Title required");
@@ -261,8 +272,8 @@ saveTaskBtn.onclick = async () => {
   await saveTasksToServer();
   hideModal();
   renderCalendar();
-};
-
+};}
+if(deleteTaskBtn){
 deleteTaskBtn.onclick = async () => {
   if (!confirm("Delete this task?")) return;
   if (!tasks || selectedTaskId === null) return;
@@ -274,7 +285,7 @@ deleteTaskBtn.onclick = async () => {
     hideModal();
     renderCalendar();
   }
-};
+};}
 
 /********* DRAG & DROP *********/
 function enableDrag() {
@@ -321,15 +332,17 @@ async function moveTaskById(id, toDate) {
 }
 
 /********* NAVIGATION *********/
+if(prevBtn){
 prevBtn.onclick = () => {
   currentDate.setMonth(currentDate.getMonth() - 1);
   renderCalendar();
-};
+};}
 
+if(nextBtn){
 nextBtn.onclick = () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
   renderCalendar();
-};
+};}
 
 /********* LIVE SYNC (listen for saves elsewhere) *********/
 window.addEventListener("storage", (e) => {
