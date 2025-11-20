@@ -7,6 +7,10 @@ if (localStorage.getItem("theme") === "dark") {
  * PROJECTS CALENDAR SCRIPT 
  ****************************/
 
+// Create a stable TODAY reference once — solves timezone issues
+const TODAY = new Date();
+TODAY.setHours(0, 0, 0, 0);
+
 const monthYear = document.getElementById("monthYear");
 const calendarDays = document.getElementById("calendarDays");
 const prevBtn = document.getElementById("prevMonth");
@@ -40,18 +44,10 @@ const TAG_COLORS = {
   Personal: "#f97316"
 };
 
-let tasks = []; // will be loaded from server
+let tasks = []; // loaded from server
 
 function fmtDate(y, m, d) {
   return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-}
-
-function todayStr() {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
 }
 
 async function loadTasksFromServer() {
@@ -65,12 +61,11 @@ async function loadTasksFromServer() {
 }
 
 async function saveTasksToServer() {
-  const res = await fetch("/save_tasks", {
+  await fetch("/save_tasks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(tasks)
   });
-  // if (res.ok) localStorage.setItem("tasksUpdated", Date.now());
 }
 
 function buildDateMap() {
@@ -88,36 +83,34 @@ function buildDateMap() {
 function renderCalendar() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
   if (monthYear) {
     monthYear.textContent = currentDate.toLocaleDateString("en-US", {
       month: "long",
       year: "numeric"
     });
-  } else {
-    return;  
-  }
+  } else return;
 
   const firstDay = new Date(year, month, 1);
   let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 7 : startDay; // start Monday
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  startDay = startDay === 0 ? 7 : startDay;
 
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   calendarDays.innerHTML = "";
 
-  for (let i = 1; i < startDay; i++) calendarDays.innerHTML += `<div></div>`;
-
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  for (let i = 1; i < startDay; i++) {
+    calendarDays.innerHTML += `<div></div>`;
+  }
 
   const dateMap = buildDateMap();
 
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = fmtDate(year, month + 1, day);
     const cellDate = new Date(year, month, day);
-    cellDate.setHours(0,0,0,0);
+    cellDate.setHours(0, 0, 0, 0);
 
-    const isToday = dateStr === todayStr();
-    const isPast = cellDate < today;
+    const isToday = +cellDate === +TODAY;
+    const isPast = cellDate < TODAY;
 
     const dayTasks = dateMap[dateStr] || [];
     const tasksHTML = dayTasks.map(t => `
@@ -131,7 +124,8 @@ function renderCalendar() {
     `).join("");
 
     calendarDays.innerHTML += `
-      <div class="calendar-day ${isToday ? "today" : ""} ${isPast ? "past-day" : ""}" data-date="${dateStr}">
+      <div class="calendar-day ${isToday ? "today" : ""} ${isPast ? "past-day" : ""}"
+           data-date="${dateStr}">
         <span class="day-number">${day}</span>
         <div class="task-box">${tasksHTML}</div>
         <button class="add-task-btn" data-date="${dateStr}">+</button>
@@ -139,7 +133,6 @@ function renderCalendar() {
     `;
   }
 
-  // attach events & drag after DOM inserted
   setTimeout(() => {
     attachEvents();
     enableDrag();
@@ -148,16 +141,16 @@ function renderCalendar() {
 
 /********* EVENTS *********/
 function attachEvents() {
-  const today = new Date(todayStr());
-
   document.querySelectorAll(".cal-task").forEach(el => {
     const taskDate = new Date(el.dataset.date);
-    taskDate.setHours(0,0,0,0);
-    if (taskDate < today) {
+    taskDate.setHours(0, 0, 0, 0);
+
+    if (taskDate < TODAY) {
       el.classList.add("disabled-task");
       el.draggable = false;
       return;
     }
+
     el.addEventListener("click", e => {
       e.stopPropagation();
       openTaskById(Number(el.dataset.id));
@@ -166,32 +159,41 @@ function attachEvents() {
 
   document.querySelectorAll(".add-task-btn").forEach(btn => {
     const btnDate = new Date(btn.dataset.date);
-    btnDate.setHours(0,0,0,0);
-    if (btnDate < today) return;
+    btnDate.setHours(0, 0, 0, 0);
+
+    if (btnDate < TODAY) return;
+
     btn.addEventListener("click", e => {
       e.stopPropagation();
-      newTask(btn.dataset.date); // Option 2: create on clicked date
+      newTask(btn.dataset.date);
     });
   });
 }
 
 /********* MODAL CONTROLS *********/
 function showModal() { modal.classList.add("open"); }
-function hideModal() { modal.classList.remove("open"); selectedTaskId = null; selectedDate = null; }
-if(closeModalBtn){
-closeModalBtn.onclick = hideModal;
-window.addEventListener("click", e => { if (e.target === modal) hideModal(); });
+function hideModal() {
+  modal.classList.remove("open");
+  selectedTaskId = null;
+  selectedDate = null;
 }
 
-/********* OPEN EXISTING TASK BY ID *********/
+if (closeModalBtn) {
+  closeModalBtn.onclick = hideModal;
+  window.addEventListener("click", e => { if (e.target === modal) hideModal(); });
+}
+
+/********* OPEN TASK *********/
 function openTaskById(id) {
   const t = tasks.find(x => x.id === id);
   if (!t) return;
+
   selectedTaskId = id;
   selectedDate = t.date || t.dueDate;
 
   modalTitle.textContent = t.title;
   modalDate.textContent = selectedDate;
+
   modalTasks.innerHTML = `
     <p><strong>Tag:</strong> ${t.tag}</p>
     <p><strong>Description:</strong> ${t.desc || t.description || "No description"}</p>
@@ -203,12 +205,13 @@ function openTaskById(id) {
 
   editForm.style.display = "none";
   modalActions.style.display = "flex";
+
   showModal();
 }
 
-/********* NEW TASK from calendar (Option 2) *********/
+/********* NEW TASK *********/
 function newTask(date) {
-  selectedDate = date;        // <-- important: use clicked date
+  selectedDate = date;
   selectedTaskId = null;
 
   modalTitle.textContent = "New Task";
@@ -221,81 +224,80 @@ function newTask(date) {
 
   editForm.style.display = "block";
   modalActions.style.display = "none";
+
   showModal();
 }
 
-/********* EDIT / SAVE (calendar modal) *********/
-if(editTaskBtn){
-editTaskBtn.onclick = () => {
-  editForm.style.display = "block";
-  modalActions.style.display = "none";
-};}
+/********* SAVE TASK *********/
+if (saveTaskBtn) {
+  saveTaskBtn.onclick = async () => {
+    const title = editTitle.value.trim();
+    if (!title) return alert("Title required");
 
-if(saveTaskBtn){
-saveTaskBtn.onclick = async () => {
-  const title = editTitle.value.trim();
-  if (!title) return alert("Title required");
+    const dateToUse = selectedDate;
 
-  const dateToUse = selectedDate || todayStr(); // If created from calendar, selectedDate is that day
+    if (!tasks) tasks = [];
 
-  if (!tasks) tasks = [];
-
-  if (selectedTaskId === null) {
-    // create new task (calendar): assign date = clicked date (Option 2)
-    const newTask = {
-      id: Date.now(),
-      tag: editTag.value || "Work",
-      title,
-      desc: editDesc.value.trim(),
-      status: "coming-next",
-      priority: "medium",
-      date: dateToUse,
-      comments: 0,
-      files: 0,
-      progress: 0,
-      totalSubtasks: 0,
-      completedSubtasks: 0
-    };
-    tasks.push(newTask);
-  } else {
-    // update existing task (find by id)
-    const idx = tasks.findIndex(t => t.id === selectedTaskId);
-    if (idx !== -1) {
-      tasks[idx].title = title;
-      tasks[idx].desc = editDesc.value.trim();
-      tasks[idx].tag = editTag.value || tasks[idx].tag;
-      // update date only if selectedDate changed (we keep it)
-      tasks[idx].date = dateToUse;
+    if (selectedTaskId === null) {
+      tasks.push({
+        id: Date.now(),
+        tag: editTag.value || "Work",
+        title,
+        desc: editDesc.value.trim(),
+        status: "coming-next",
+        priority: "medium",
+        date: dateToUse,
+        comments: 0,
+        files: 0,
+        progress: 0,
+        totalSubtasks: 0,
+        completedSubtasks: 0
+      });
+    } else {
+      const idx = tasks.findIndex(t => t.id === selectedTaskId);
+      if (idx !== -1) {
+        tasks[idx].title = title;
+        tasks[idx].desc = editDesc.value.trim();
+        tasks[idx].tag = editTag.value;
+        tasks[idx].date = dateToUse;
+      }
     }
-  }
 
-  await saveTasksToServer();
-  hideModal();
-  renderCalendar();
-};}
-if(deleteTaskBtn){
-deleteTaskBtn.onclick = async () => {
-  if (!confirm("Delete this task?")) return;
-  if (!tasks || selectedTaskId === null) return;
-
-  const idx = tasks.findIndex(t => t.id === selectedTaskId);
-  if (idx !== -1) {
-    tasks.splice(idx, 1);
     await saveTasksToServer();
     hideModal();
     renderCalendar();
-  }
-};}
+  };
+}
+
+if (editTaskBtn) {
+  editTaskBtn.onclick = () => {
+    editForm.style.display = "block";
+    modalActions.style.display = "none";
+  };
+}
+
+if (deleteTaskBtn) {
+  deleteTaskBtn.onclick = async () => {
+    if (!confirm("Delete this task?")) return;
+    if (!tasks || selectedTaskId === null) return;
+
+    const idx = tasks.findIndex(t => t.id === selectedTaskId);
+    if (idx !== -1) {
+      tasks.splice(idx, 1);
+      await saveTasksToServer();
+      hideModal();
+      renderCalendar();
+    }
+  };
+}
 
 /********* DRAG & DROP *********/
 function enableDrag() {
   document.querySelectorAll(".cal-task").forEach(task => {
-    // make sure draggable toggling is correct
     const taskDate = new Date(task.dataset.date);
-    const today = new Date(); today.setHours(0,0,0,0);
-    taskDate.setHours(0,0,0,0);
+    taskDate.setHours(0, 0, 0, 0);
 
-    if (taskDate < today) {
+    if (taskDate < TODAY) {
       task.draggable = false;
       task.classList.add("not-draggable");
       return;
@@ -303,22 +305,23 @@ function enableDrag() {
 
     task.draggable = true;
     task.ondragstart = e => {
-      e.dataTransfer.setData("text/plain", JSON.stringify({ id: Number(task.dataset.id), from: task.dataset.date }));
+      e.dataTransfer.setData("text/plain", JSON.stringify({
+        id: Number(task.dataset.id),
+        from: task.dataset.date
+      }));
     };
   });
 
   document.querySelectorAll(".calendar-day").forEach(day => {
     const dayDate = new Date(day.dataset.date);
-    const today = new Date(); today.setHours(0,0,0,0);
-    dayDate.setHours(0,0,0,0);
+    dayDate.setHours(0, 0, 0, 0);
 
-    if (dayDate < today) return;
+    if (dayDate < TODAY) return;
 
     day.ondragover = e => e.preventDefault();
     day.ondrop = e => {
       const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-      const toDate = day.dataset.date;
-      moveTaskById(data.id, toDate);
+      moveTaskById(data.id, day.dataset.date);
     };
   });
 }
@@ -331,21 +334,23 @@ async function moveTaskById(id, toDate) {
   renderCalendar();
 }
 
-/********* NAVIGATION *********/
-if(prevBtn){
-prevBtn.onclick = () => {
-  currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar();
-};}
+/********* MONTH NAVIGATION *********/
+if (prevBtn) {
+  prevBtn.onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  };
+}
 
-if(nextBtn){
-nextBtn.onclick = () => {
-  currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar();
-};}
+if (nextBtn) {
+  nextBtn.onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  };
+}
 
-/********* LIVE SYNC (listen for saves elsewhere) *********/
-window.addEventListener("storage", (e) => {
+/********* SYNC *********/
+window.addEventListener("storage", e => {
   if (e.key === "tasksUpdated") {
     loadTasksFromServer().then(() => renderCalendar());
   }

@@ -73,12 +73,21 @@
 
 <!-- Toggle script -->
 <script>
+/***************************
+ * ELEMENTS
+ **************************/
 const loginBox = document.getElementById("loginBox");
 const signupBox = document.getElementById("signupBox");
 const showSignup = document.getElementById("showSignup");
 const showLogin = document.getElementById("showLogin");
 
-if(showSignup){
+const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
+
+/***************************
+ * TOGGLE LOGIN <-> SIGNUP
+ **************************/
+if (showSignup) {
   showSignup.onclick = e => {
     e.preventDefault();
     loginBox.classList.add("hidden");
@@ -86,7 +95,7 @@ if(showSignup){
   };
 }
 
-if(showLogin){
+if (showLogin) {
   showLogin.onclick = e => {
     e.preventDefault();
     signupBox.classList.add("hidden");
@@ -94,69 +103,62 @@ if(showLogin){
   };
 }
 
-
-const signupForm = document.getElementById("signupForm");
-const loginForm = document.getElementById("loginForm");
-
-// Handle signup
+/***************************
+ * SIGNUP HANDLER (frontend storage)
+ **************************/
 if (signupForm) {
-  // signupForm.addEventListener("submit", function(e) {
-  //   e.preventDefault();
+  signupForm.addEventListener("submit", function (e) {
 
-  //   const nameField = signupForm.querySelector("input[name='name']");
-  //   const fullName = nameField.value.trim();
+    // Allow Flask POST to work normally,
+    // but ALSO validate full name on the frontend.
+    const nameField = signupForm.querySelector("input[name='name']");
+    const fullName = nameField.value.trim();
 
-  //   // VALIDATION: must contain at least TWO words
-  //   const nameParts = fullName.split(" ").filter(part => part.length > 0);
+    // Full name must contain at least 2 words
+    const parts = fullName.split(" ").filter(p => p.length > 0);
+    if (parts.length < 2) {
+      e.preventDefault();     // stop form submit
+      alert("Please enter your full name (first and last).");
+      nameField.focus();
+      return;
+    }
 
-  //   if (nameParts.length < 2) {
-  //     alert("Please enter your full name (first and last name).");
-  //     nameField.focus();
-  //     return; 
-  //   }
-
-    // Continue normally
+    // Save locally for smoother UX (optional)
     const email = signupForm.querySelector("input[name='email']").value.trim();
     const password = signupForm.querySelector("input[name='password']").value.trim();
 
     const user = { name: fullName, email, password };
     localStorage.setItem("user", JSON.stringify(user));
-
-    alert("Account created successfully 🎉");
-
-    signupBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
- 
+  });
 }
 
-
-
-// Handle login
+/***************************
+ * LOGIN HANDLER (frontend storage)
+ **************************/
 if (loginForm) {
-  // loginForm.addEventListener("submit", function(e) {
-  //   e.preventDefault();
+  loginForm.addEventListener("submit", function (e) {
 
-  //   const email = loginForm.querySelector("input[name='email']").value;
-  //   const password = loginForm.querySelector("input[name='password']").value;
+    // Let Flask /login handle server auth,
+    // but add localStorage support for a seamless UX.
+    const email = loginForm.querySelector("input[name='email']").value.trim();
+    const password = loginForm.querySelector("input[name='password']").value.trim();
 
-  //   const savedUser = JSON.parse(localStorage.getItem("user"));
+    const savedUser = JSON.parse(localStorage.getItem("user"));
 
-  //   if (!savedUser) {
-  //     alert("No account found. Please sign up first.");
-  //     return;
-  //   }
+    // If no saved user → let backend do normal login
+    if (!savedUser) return;
 
-  //   if (email === savedUser.email && password === savedUser.password) {
-  //     alert(`Welcome back, ${savedUser.name}! ✅`);
-  //     // You can redirect to dashboard.html here:
-  //     window.location.href = "/dashboard"; // or dashboard.html if static
-  //   } else {
-  //     alert("Incorrect email or password ❌");
-  //   }
-  // });
+    // If localStorage user matches → redirect instantly (optional)
+    if (email === savedUser.email && password === savedUser.password) {
+      e.preventDefault();  // prevent form POST
+      alert(`Welcome back, ${savedUser.name}! ✅`);
+      window.location.href = "/dashboard";
+      return;
+    }
+
+    // Otherwise let Flask login check handle mismatch normally
+  });
 }
-
-
 </script>
 
 </body>

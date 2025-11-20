@@ -146,6 +146,11 @@
   cursor: not-allowed;
 }
 
+.active-day {
+  cursor: default;
+  pointer-events: none;
+}
+
 /* Past day fade effect */
 .calendar-day.past-day .add-task-btn {
   opacity: 0.6;
