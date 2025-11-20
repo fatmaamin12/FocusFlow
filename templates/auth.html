@@ -31,8 +31,9 @@
         <input type="email" name="email" placeholder="Email" required>
       </div>
 
-      <div class="input-box">
-        <input type="password" name="password" placeholder="Password" required>
+      <div class="input-box password-box">
+        <input type="password" name="password" id="loginPassword" placeholder="Password" required>
+        <i class='bx bx-hide toggle-pass' data-target="loginPassword"></i>
       </div>
 
       <button type="submit" class="auth-btn">Sign In</button>
@@ -59,8 +60,9 @@
         <input type="email" name="email" placeholder="Email" required>
       </div>
 
-      <div class="input-box">
-        <input type="password" name="password" placeholder="Password" required>
+      <div class="input-box password-box">
+        <input type="password" name="password" id="signupPassword" placeholder="Password" required>
+        <i class='bx bx-hide toggle-pass' data-target="signupPassword"></i>
       </div>
 
       <button type="submit" class="auth-btn">Sign Up</button>
@@ -71,7 +73,7 @@
 
 </div>
 
-<!-- Toggle script -->
+<!-- SCRIPT -->
 <script>
 /***************************
  * ELEMENTS
@@ -109,21 +111,17 @@ if (showLogin) {
 if (signupForm) {
   signupForm.addEventListener("submit", function (e) {
 
-    // Allow Flask POST to work normally,
-    // but ALSO validate full name on the frontend.
     const nameField = signupForm.querySelector("input[name='name']");
     const fullName = nameField.value.trim();
 
-    // Full name must contain at least 2 words
     const parts = fullName.split(" ").filter(p => p.length > 0);
     if (parts.length < 2) {
-      e.preventDefault();     // stop form submit
+      e.preventDefault();
       alert("Please enter your full name (first and last).");
       nameField.focus();
       return;
     }
 
-    // Save locally for smoother UX (optional)
     const email = signupForm.querySelector("input[name='email']").value.trim();
     const password = signupForm.querySelector("input[name='password']").value.trim();
 
@@ -138,27 +136,41 @@ if (signupForm) {
 if (loginForm) {
   loginForm.addEventListener("submit", function (e) {
 
-    // Let Flask /login handle server auth,
-    // but add localStorage support for a seamless UX.
     const email = loginForm.querySelector("input[name='email']").value.trim();
     const password = loginForm.querySelector("input[name='password']").value.trim();
 
     const savedUser = JSON.parse(localStorage.getItem("user"));
 
-    // If no saved user → let backend do normal login
     if (!savedUser) return;
 
-    // If localStorage user matches → redirect instantly (optional)
     if (email === savedUser.email && password === savedUser.password) {
-      e.preventDefault();  // prevent form POST
+      e.preventDefault();
       alert(`Welcome back, ${savedUser.name}! ✅`);
       window.location.href = "/dashboard";
       return;
     }
-
-    // Otherwise let Flask login check handle mismatch normally
   });
 }
+
+/***************************
+ * SHOW / HIDE PASSWORD
+ **************************/
+document.querySelectorAll(".toggle-pass").forEach(icon => {
+  icon.addEventListener("click", () => {
+    const targetId = icon.getAttribute("data-target");
+    const input = document.getElementById(targetId);
+
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.remove("bx-hide");
+      icon.classList.add("bx-show");
+    } else {
+      input.type = "password";
+      icon.classList.remove("bx-show");
+      icon.classList.add("bx-hide");
+    }
+  });
+});
 </script>
 
 </body>
