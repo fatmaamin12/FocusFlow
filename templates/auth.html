@@ -141,14 +141,6 @@ if (loginForm) {
 
     const savedUser = JSON.parse(localStorage.getItem("user"));
 
-    if (!savedUser) return;
-
-    if (email === savedUser.email && password === savedUser.password) {
-      e.preventDefault();
-      alert(`Welcome back, ${savedUser.name}! ✅`);
-      window.location.href = "/dashboard";
-      return;
-    }
   });
 }
 

@@ -1,5 +1,19 @@
 [
   {
+    "id": 1763634863862,
+    "tag": "New Task",
+    "title": "sandy",
+    "desc": "dvsgfd",
+    "status": "in-progress",
+    "priority": "medium",
+    "date": "2025-11-20",
+    "comments": 0,
+    "files": 0,
+    "progress": 40,
+    "totalSubtasks": 5,
+    "completedSubtasks": 2
+  },
+  {
     "comments": 0,
     "completedSubtasks": 6,
     "date": "2025-11-20",
@@ -180,19 +194,5 @@
     "tag": "Personal",
     "title": "Resume Update",
     "totalSubtasks": 0
-  },
-  {
-    "id": 1763623987593,
-    "tag": "Work",
-    "title": "jhgftftc",
-    "desc": "kjljlkn",
-    "status": "coming-next",
-    "priority": "medium",
-    "date": "2025-11-20",
-    "comments": 0,
-    "files": 0,
-    "progress": 0,
-    "totalSubtasks": 0,
-    "completedSubtasks": 0
   }
 ]
